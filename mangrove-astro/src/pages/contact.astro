@@ -1,0 +1,91 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Contact — Mangrove" description="Get in touch with Mangrove to discuss how we can help your business.">
+  <section class="page-hero">
+    <div class="container">
+      <p class="section-label">Contact</p>
+      <h1>Let's talk about your business.</h1>
+      <p>Most engagements start with a free, no-obligation conversation. We'll listen first and tell you honestly if we're the right fit.</p>
+    </div>
+  </section>
+
+  <section class="contact-section">
+    <div class="container">
+      <div class="contact-grid">
+        <!-- Form -->
+        <div>
+          <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Send us a message</h2>
+          <form id="contactForm" onsubmit="handleSubmit(event)">
+            <div class="form-group">
+              <label for="name">Your name</label>
+              <input type="text" id="name" name="name" placeholder="Sarah Mitchell" required />
+            </div>
+            <div class="form-group">
+              <label for="email">Work email</label>
+              <input type="email" id="email" name="email" placeholder="sarah@yourbusiness.co.nz" required />
+            </div>
+            <div class="form-group">
+              <label for="business">Business name</label>
+              <input type="text" id="business" name="business" placeholder="Mitchell & Co" />
+            </div>
+            <div class="form-group">
+              <label for="help">What are you trying to solve?</label>
+              <textarea id="help" name="help" rows="5" placeholder="Tell us what's not working, what you want to achieve, or just say hi. No wrong answers."></textarea>
+            </div>
+            <button type="submit" class="btn-primary" id="submitBtn">Send Message →</button>
+            <p id="formSuccess" style="display:none; margin-top:1rem; color: var(--primary); font-weight:600;">Message sent! We'll be in touch within 1 business day.</p>
+          </form>
+        </div>
+
+        <!-- Info -->
+        <div>
+          <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">What happens next</h2>
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div class="contact-info-item">
+              <div style="width: 40px; height: 40px; border-radius: 8px; background: var(--bg-alt); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">1</div>
+              <div>
+                <h3>We read your message</h3>
+                <p>We review every enquiry personally — usually within 1 business day.</p>
+              </div>
+            </div>
+            <div class="contact-info-item">
+              <div style="width: 40px; height: 40px; border-radius: 8px; background: var(--bg-alt); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">2</div>
+              <div>
+                <h3>A real conversation</h3>
+                <p>No hard sell. We'll ask questions, listen, and tell you honestly whether we're the right fit.</p>
+              </div>
+            </div>
+            <div class="contact-info-item">
+              <div style="width: 40px; height: 40px; border-radius: 8px; background: var(--bg-alt); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">3</div>
+              <div>
+                <h3>A clear proposal</h3>
+                <p>If we're a good fit, we'll put together a specific proposal for your situation — with honest pricing.</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+            <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">Prefer email?</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">hello@mangrove.co.nz</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script is:inline>
+function handleSubmit(e) {
+  e.preventDefault();
+  var btn = document.getElementById('submitBtn');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  // Simulate send (Formspree would go here)
+  setTimeout(function() {
+    document.getElementById('formSuccess').style.display = 'block';
+    btn.textContent = 'Sent!';
+  }, 800);
+}
+</script>

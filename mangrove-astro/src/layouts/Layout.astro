@@ -1,0 +1,84 @@
+---
+export interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = "Mangrove helps businesses become easier to run — better systems, clearer processes, ongoing support." } = Astro.props;
+---
+<!doctype html>
+<html lang="en" data-scheme="sky-coral">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <title>{title}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/global.css" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+
+<!-- Colour Scheme Picker -->
+<div class="scheme-picker" id="schemePicker">
+  <span class="scheme-picker-label">Colour:</span>
+  <button class="scheme-btn active" data-scheme="sky-coral" onclick="setScheme('sky-coral')">
+    <span class="swatch" style="background: #0066FF"></span> Sky
+  </button>
+  <button class="scheme-btn" data-scheme="teal-amber" onclick="setScheme('teal-amber')">
+    <span class="swatch" style="background: #0D9488"></span> Teal
+  </button>
+  <button class="scheme-btn" data-scheme="violet-citrine" onclick="setScheme('violet-citrine')">
+    <span class="swatch" style="background: #7C3AED"></span> Violet
+  </button>
+  <button class="scheme-btn" data-scheme="forest-tangerine" onclick="setScheme('forest-tangerine')">
+    <span class="swatch" style="background: #166534"></span> Forest
+  </button>
+  <button class="scheme-btn" data-scheme="rose-electric" onclick="setScheme('rose-electric')">
+    <span class="swatch" style="background: #0284C7"></span> Rose
+  </button>
+</div>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">Mangrove</a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/services">Services</a></li>
+      <li><a href="/contact" class="nav-cta">Get in Touch</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Page Content -->
+<slot />
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <span>© 2026 Mangrove. Building better business ecosystems.</span>
+    <span>
+      <a href="/">Home</a> · <a href="/about">About</a> · <a href="/services">Services</a> · <a href="/contact">Contact</a>
+    </span>
+  </div>
+</footer>
+
+<script is:inline>
+function setScheme(scheme) {
+  document.documentElement.setAttribute('data-scheme', scheme);
+  document.querySelectorAll('.scheme-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.getAttribute('data-scheme') === scheme);
+  });
+  try { localStorage.setItem('mangrove-scheme', scheme); } catch(e) {}
+}
+try {
+  var saved = localStorage.getItem('mangrove-scheme');
+  if (saved) setScheme(saved);
+} catch(e) {}
+</script>
+
+</body>
+</html>
