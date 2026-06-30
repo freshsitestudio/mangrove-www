@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -25,14 +25,15 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: mangrove-astro/package-lock.json
       - name: Install dependencies
-        run: npm ci
+        run: cd mangrove-astro && npm ci
       - name: Build
-        run: npm run build
+        run: cd mangrove-astro && npm run build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: mangrove-astro/dist
 
   deploy:
     environment:
