@@ -1,0 +1,45 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  ctaPrimary: { text: string; href: string };
+  ctaSecondary?: { text: string; href: string };
+}
+
+const { title, subtitle, ctaPrimary, ctaSecondary } = Astro.props;
+---
+
+<section
+  style="background: var(--primary); padding: 5rem 1.5rem;"
+  aria-labelledby="cta-heading"
+>
+  <div style="max-width: 56rem; margin: 0 auto; text-align: center;">
+    <h2
+      id="cta-heading"
+      style="font-size: clamp(1.5rem, 3.5vw, 2.5rem); font-weight: 700; color: #fff; margin: 0 0 1rem;"
+    >
+      {title}
+    </h2>
+    {subtitle && (
+      <p style="color: rgba(255,255,255,0.8); font-size: 1.125rem; margin: 0 0 2.5rem; max-width: 38rem; margin-left: auto; margin-right: auto;">
+        {subtitle}
+      </p>
+    )}
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+      <a
+        href={ctaPrimary.href}
+        style="background: #fff; color: var(--primary); padding: 0.875rem 2rem; border-radius: var(--radius); font-weight: 600; font-size: 1rem; display: inline-block;"
+      >
+        {ctaPrimary.text}
+      </a>
+      {ctaSecondary && (
+        <a
+          href={ctaSecondary.href}
+          style="background: transparent; color: #fff; padding: 0.875rem 2rem; border-radius: var(--radius); font-weight: 600; font-size: 1rem; border: 2px solid rgba(255,255,255,0.5); display: inline-block;"
+        >
+          {ctaSecondary.text}
+        </a>
+      )}
+    </div>
+  </div>
+</section>

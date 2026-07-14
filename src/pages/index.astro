@@ -1,0 +1,106 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/widgets/Hero.astro";
+import PainGrid from "../components/widgets/PainGrid.astro";
+import AudienceGrid from "../components/widgets/AudienceGrid.astro";
+import ServiceCards from "../components/widgets/ServiceCards.astro";
+import Testimonial from "../components/widgets/Testimonial.astro";
+import CTABand from "../components/widgets/CTABand.astro";
+---
+
+<Layout title="Home">
+  <!-- Home: Hero → PainGrid → AudienceGrid → ServiceCards → Testimonial → CTABand (AD-6) -->
+
+  <Hero
+    tagline="Neighbourhood favourite"
+    title="The kind of place people want to walk into."
+    subtitle="Soft warm design for cafes, local retail, and community venues. Friendliness-first — not heritage reliability or cool corporate polish."
+    ctaPrimary={{ text: "Visit us", href: "/contact" }}
+    ctaSecondary={{ text: "See what's on", href: "/services" }}
+  />
+
+  <PainGrid
+    items={[
+      {
+        title: "People choose you because they like the vibe",
+        description: "Heritage-trust themes miss the mark for cafes and community spots. Your customers want warmth and approachability, not decades-of-service gravitas.",
+      },
+      {
+        title: "Your space is hard to capture online",
+        description: "Neighbourhood venues need copy and layout that feels lived-in — not B2B procurement language or startup gradient heroes.",
+      },
+      {
+        title: "Your current site feels too formal or too cold",
+        description: "Walnut serif shopfronts and cool blue gradients both push away the casual visitor who just wants to pop in.",
+      },
+    ]}
+  />
+
+  <AudienceGrid
+    items={[
+      {
+        title: "Cafes & bakeries",
+        description: "Morning regulars, weekend brunch crowds, and the kind of spot where the barista knows your order.",
+      },
+      {
+        title: "Local retail & markets",
+        description: "Family-run shops, weekend markets, and neighbourhood stores where personality matters more than polish.",
+      },
+      {
+        title: "Community & family services",
+        description: "Organisations and family businesses where comfort and likability drive the first visit.",
+      },
+    ]}
+  />
+
+  <ServiceCards
+    services={[
+      {
+        name: "Walk-in welcome",
+        tagline: "Drop by anytime — no appointment needed.",
+        price: "From $8",
+        features: [
+          "Friendly counter service",
+          "Seasonal specials board",
+          "Community noticeboard",
+          "Kids corner",
+        ],
+      },
+      {
+        name: "Regulars club",
+        tagline: "For neighbours who come back every week.",
+        price: "From $25",
+        features: [
+          "Loyalty stamp card",
+          "Early-bird specials",
+          "Birthday treat",
+          "Event invites",
+        ],
+      },
+      {
+        name: "Community events",
+        tagline: "Markets, workshops, and neighbourhood gatherings.",
+        features: [
+          "Flexible booking",
+          "Local vendor tables",
+          "Shared seating",
+          "Social media shout-out",
+        ],
+      },
+    ]}
+  />
+
+  <Testimonial
+    quote="It finally feels like our cafe — warm, easy, the kind of place you tell your friends about."
+    author="Sophie"
+    role="Owner"
+    company="Cornerstone Cafe"
+  />
+
+  <CTABand
+    title="Ready for a site that feels as welcoming as your front door?"
+    subtitle="Tell us about your venue and the community you serve."
+    ctaPrimary={{ text: "Get in touch", href: "/contact" }}
+    ctaSecondary={{ text: "Our offerings", href: "/services" }}
+  />
+</Layout>

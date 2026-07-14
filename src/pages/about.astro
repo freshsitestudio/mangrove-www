@@ -1,0 +1,69 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHero from "../components/widgets/PageHero.astro";
+import Content from "../components/widgets/Content.astro";
+import ValuesGrid from "../components/widgets/ValuesGrid.astro";
+import ProcessSteps from "../components/widgets/ProcessSteps.astro";
+import CTABand from "../components/widgets/CTABand.astro";
+---
+
+<Layout title="About Us">
+  <!-- About: PageHero → Content → ValuesGrid → ProcessSteps → CTABand (AD-6) -->
+
+  <PageHero
+    title="About us"
+    subtitle="We help neighbourhood businesses look as welcoming as they feel in person."
+  />
+
+  <Content
+    title="Our story"
+    body="<p>People choose cafes, local shops, and community venues because they like the vibe — not because they need proof you've been around for decades. Too many great neighbourhood spots lose that feeling online to sites that look like heritage trades or corporate brochures.</p><p>We design for friendliness: warm off-white surfaces, rounded cards, approachable Nunito headlines, and copy that says &ldquo;come on in&rdquo; rather than &ldquo;trust our credentials.&rdquo; The goal is a site that makes someone want to walk through your door.</p><p>Every engagement starts from the same principle: if a visitor cannot quickly feel what your place is like, the design has failed.</p>"
+  />
+
+  <ValuesGrid
+    items={[
+      {
+        title: "Friendliness first",
+        description: "Typography, spacing, and copy are tuned for likability — not heritage gravitas or corporate authority.",
+      },
+      {
+        title: "Community warmth",
+        description: "Warm off-white and earthy brick palettes signal approachability. Cool blues and stark formality are cut.",
+      },
+      {
+        title: "Neighbourhood connection",
+        description: "Service framing and testimonials help locals recommend you because they genuinely like you.",
+      },
+      {
+        title: "You own the assets",
+        description: "Domain, code, and content stay with you. We build a reusable foundation — not a locked-in brochure.",
+      },
+    ]}
+  />
+
+  <ProcessSteps
+    steps={[
+      {
+        number: 1,
+        title: "Discovery",
+        description: "We map your venue, regulars, and the community feeling you want people to have before they visit.",
+      },
+      {
+        number: 2,
+        title: "Design and build",
+        description: "We implement the locked theme contract — pages, widgets, and community placeholder copy — with your review at each stage.",
+      },
+      {
+        number: 3,
+        title: "Launch and handover",
+        description: "We ship, verify forms and navigation, and hand over a maintainable Astro site ready for Cloudflare Pages.",
+      },
+    ]}
+  />
+
+  <CTABand
+    title="Ready for a site as welcoming as your venue?"
+    subtitle="Tell us about your community and what makes people want to visit."
+    ctaPrimary={{ text: "Get in touch", href: "/contact" }}
+  />
+</Layout>

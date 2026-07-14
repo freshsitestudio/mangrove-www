@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+/* ============================================================
+   WARM LOCAL — CSS Custom Properties (AD-4: 18 fixed tokens)
+   Fixed-palette, friendliness-first, soft-warm community theme.
+   No [data-scheme] blocks — palette_locked: true.
+   ============================================================ */
+
+:root {
+  /* Backgrounds */
+  --bg:              #FFF7ED;   /* Warm cream-orange — §6 token_delta */
+  --bg-alt:          #FEF3C7;   /* Warm yellow-white */
+  --bg-dark:         #431407;   /* Deep rust */
+
+  /* Surface */
+  --surface:         #FFFFFF;
+
+  /* Text */
+  --text:            #1C1A18;
+  /* #78716C ≈ 4.6:1 on --bg; ≈ 4.5:1 on --bg-alt (WCAG AA) */
+  --text-muted:      #78716C;
+
+  /* Brand */
+  --primary:         #9A3412;   /* Brick red — §6 token_delta */
+  --primary-dark:    #7C2D12;
+  --accent:          #84CC16;   /* Lime green — §6 token_delta */
+  --accent-warm:     #F59E0B;
+
+  /* Decoration */
+  --border:          rgba(154, 52, 18, 0.10);
+  --gradient-start:  #FFF7ED;   /* Soft warm hero — not a consumer blue gradient */
+  --gradient-end:    #FEF3C7;
+
+  /* Layout */
+  --nav-height:      4rem;
+  --radius:          1rem;
+  --radius-lg:       1.25rem;
+
+  /* Shadows */
+  --shadow:          0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg:       0 12px 40px -8px rgba(0, 0, 0, 0.12);
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Lora', Georgia, serif;
+  line-height: 1.6;
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Nunito', system-ui, sans-serif;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}

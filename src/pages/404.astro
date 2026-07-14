@@ -1,0 +1,35 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Page Not Found">
+  <!-- 404: Minimal error section (AD-6) -->
+  <section
+    style="padding: 8rem 1.5rem; text-align: center; background: var(--bg);"
+    aria-labelledby="error-heading"
+  >
+    <div style="max-width: 36rem; margin: 0 auto;">
+      <p
+        style="font-size: 6rem; font-weight: 700; color: var(--primary); line-height: 1; margin: 0 0 1rem;"
+        aria-hidden="true"
+      >
+        404
+      </p>
+      <h1
+        id="error-heading"
+        style="font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; color: var(--text); margin: 0 0 1rem;"
+      >
+        Page not found
+      </h1>
+      <p style="color: var(--text-muted); font-size: 1.125rem; margin: 0 0 2.5rem;">
+        Sorry, the page you're looking for doesn't exist or has been moved.
+      </p>
+      <a
+        href="/"
+        style="background: var(--primary); color: #fff; padding: 0.875rem 2rem; border-radius: var(--radius); font-weight: 600; display: inline-block;"
+      >
+        Go home
+      </a>
+    </div>
+  </section>
+</Layout>

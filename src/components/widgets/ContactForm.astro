@@ -1,0 +1,133 @@
+---
+interface Props {
+  phone?: string;
+  address?: string;
+}
+
+const { phone, address } = Astro.props;
+---
+
+<section style="padding: 5rem 1.5rem; background: var(--bg);" aria-labelledby="contact-form-heading">
+  <div style="max-width: 42rem; margin: 0 auto;">
+    <h2
+      id="contact-form-heading"
+      style="font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; color: var(--text); margin: 0 0 2rem;"
+    >
+      Send us a message
+    </h2>
+
+    {(phone || address) && (
+      <div style="margin-bottom: 2rem; color: var(--text-muted);">
+        {phone && <p style="margin: 0 0 0.5rem;"><strong>Phone:</strong> {phone}</p>}
+        {address && <p style="margin: 0;"><strong>Address:</strong> {address}</p>}
+      </div>
+    )}
+
+    <form
+      name="contact"
+      method="POST"
+      action="/contact"
+      style="display: flex; flex-direction: column; gap: 1.5rem;"
+    >
+      <div>
+        <label
+          for="contact-name"
+          style="display: block; font-weight: 600; color: var(--text); margin-bottom: 0.375rem; font-size: 0.9375rem;"
+        >
+          Your name <span aria-hidden="true" style="color: var(--primary);">*</span>
+        </label>
+        <input
+          id="contact-name"
+          name="name"
+          type="text"
+          required
+          autocomplete="name"
+          placeholder="Jane Smith"
+          style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; color: var(--text); background: var(--surface); font-family: inherit;"
+        />
+      </div>
+
+      <div>
+        <label
+          for="contact-email"
+          style="display: block; font-weight: 600; color: var(--text); margin-bottom: 0.375rem; font-size: 0.9375rem;"
+        >
+          Email address <span aria-hidden="true" style="color: var(--primary);">*</span>
+        </label>
+        <input
+          id="contact-email"
+          name="email"
+          type="email"
+          required
+          autocomplete="email"
+          placeholder="jane@example.com"
+          style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; color: var(--text); background: var(--surface); font-family: inherit;"
+        />
+      </div>
+
+      <div>
+        <label
+          for="contact-message"
+          style="display: block; font-weight: 600; color: var(--text); margin-bottom: 0.375rem; font-size: 0.9375rem;"
+        >
+          Message <span aria-hidden="true" style="color: var(--primary);">*</span>
+        </label>
+        <textarea
+          id="contact-message"
+          name="message"
+          required
+          rows="5"
+          placeholder="Tell us how we can help…"
+          style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; color: var(--text); background: var(--surface); font-family: inherit; resize: vertical;"
+        ></textarea>
+      </div>
+
+      <p style="color: var(--text-muted); font-size: 0.875rem; margin: 0;">
+        <span style="color: var(--primary);">*</span> Required fields
+      </p>
+
+      <button
+        type="submit"
+        style="background: var(--primary); color: #fff; padding: 0.875rem 2rem; border-radius: var(--radius); font-weight: 600; font-size: 1rem; border: none; cursor: pointer; align-self: flex-start; font-family: inherit;"
+      >
+        Send message
+      </button>
+    </form>
+
+    <script is:inline>
+      (function () {
+        const form = document.querySelector('form[name="contact"]');
+        if (!form) return;
+
+        form.querySelectorAll("input, textarea").forEach(function (field) {
+          field.addEventListener("input", function () {
+            field.removeAttribute("aria-invalid");
+            field.style.borderColor = "";
+          });
+        });
+
+        form.addEventListener("submit", function (e) {
+          let valid = true;
+          form.querySelectorAll("[required]").forEach(function (field) {
+            const empty = !field.value.trim();
+            const emailBad =
+              field.type === "email" && field.value.trim() && !field.checkValidity();
+            if (empty || emailBad) {
+              field.style.borderColor = "#DC2626";
+              field.setAttribute("aria-invalid", "true");
+              valid = false;
+            } else {
+              field.style.borderColor = "";
+              field.removeAttribute("aria-invalid");
+            }
+          });
+          if (!valid) {
+            e.preventDefault();
+            const first = form.querySelector("[aria-invalid='true']");
+            if (first) first.focus();
+          }
+        });
+      })();
+    </script>
+  </div>
+</section>

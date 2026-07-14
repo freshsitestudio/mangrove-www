@@ -1,0 +1,59 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHero from "../components/widgets/PageHero.astro";
+import ServiceCards from "../components/widgets/ServiceCards.astro";
+import CTABand from "../components/widgets/CTABand.astro";
+---
+
+<Layout title="Services">
+  <!-- Services: PageHero → ServiceCards → CTABand (AD-6) -->
+
+  <PageHero
+    title="What we offer"
+    subtitle="Clear offerings for locals who want to know what to expect before they walk in."
+  />
+
+  <ServiceCards
+    services={[
+      {
+        name: "Walk-in welcome",
+        tagline: "Drop by anytime — friendly counter service.",
+        price: "From $8",
+        features: [
+          "Seasonal specials",
+          "Community noticeboard",
+          "Outdoor seating",
+          "Free Wi-Fi",
+        ],
+      },
+      {
+        name: "Regulars club",
+        tagline: "Rewards for neighbours who come back every week.",
+        price: "From $25",
+        features: [
+          "Loyalty stamp card",
+          "Early-bird specials",
+          "Birthday treat",
+          "Event invites",
+        ],
+      },
+      {
+        name: "Community events",
+        tagline: "Markets, workshops, and neighbourhood gatherings.",
+        price: "From $50",
+        features: [
+          "Flexible booking",
+          "Local vendor tables",
+          "Shared seating",
+          "Social media shout-out",
+        ],
+      },
+    ]}
+  />
+
+  <CTABand
+    title="Planning something for the neighbourhood?"
+    subtitle="Describe your event or offering and we will help you get the word out."
+    ctaPrimary={{ text: "Contact us", href: "/contact" }}
+  />
+</Layout>

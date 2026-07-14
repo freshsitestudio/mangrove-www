@@ -1,0 +1,39 @@
+---
+interface Props {
+  quote: string;
+  author: string;
+  role?: string;
+  company?: string;
+}
+
+const { quote, author, role, company } = Astro.props;
+---
+
+<section style="padding: 5rem 1.5rem; background: var(--bg-alt);" aria-labelledby="testimonial-heading">
+  <div style="max-width: 48rem; margin: 0 auto; text-align: center;">
+    <h2
+      id="testimonial-heading"
+      class="visually-hidden"
+      style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap;"
+    >
+      Client testimonial
+    </h2>
+    <figure style="margin: 0;">
+      <blockquote
+        style="font-size: clamp(1.125rem, 2.5vw, 1.5rem); font-weight: 600; color: var(--text); line-height: 1.5; margin: 0 0 2rem; position: relative;"
+      >
+        <span aria-hidden="true" style="color: var(--primary); font-size: 4rem; line-height: 0; vertical-align: -1rem; margin-right: 0.25rem;">&ldquo;</span>
+        {quote}
+        <span aria-hidden="true" style="color: var(--primary); font-size: 4rem; line-height: 0; vertical-align: -1rem; margin-left: 0.25rem;">&rdquo;</span>
+      </blockquote>
+      <figcaption>
+        <strong style="color: var(--text); font-weight: 600;">{author}</strong>
+        {(role || company) && (
+          <span style="color: var(--text-muted); font-size: 0.9375rem; display: block; margin-top: 0.25rem;">
+            {role}{role && company && " · "}{company}
+          </span>
+        )}
+      </figcaption>
+    </figure>
+  </div>
+</section>

@@ -1,0 +1,23 @@
+---
+interface Props {
+  title: string;
+  body: string;
+}
+
+const { title, body } = Astro.props;
+---
+
+<section style="padding: 5rem 1.5rem; background: var(--bg);" aria-labelledby="content-heading">
+  <div style="max-width: 56rem; margin: 0 auto;">
+    <h2
+      id="content-heading"
+      style="font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; color: var(--text); margin: 0 0 1.5rem;"
+    >
+      {title}
+    </h2>
+    <div
+      style="color: var(--text-muted); line-height: 1.8; font-size: 1.0625rem; max-width: 42rem;"
+      set:html={body}
+    />
+  </div>
+</section>

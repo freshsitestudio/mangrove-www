@@ -1,0 +1,19 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageHero from "../components/widgets/PageHero.astro";
+import ContactForm from "../components/widgets/ContactForm.astro";
+---
+
+<Layout title="Contact">
+  <!-- Contact: PageHero → ContactForm (AD-6; no ContactInfo between them) -->
+
+  <PageHero
+    title="Get in touch"
+    subtitle="Pop in, call, or send a message — we love hearing from locals."
+  />
+
+  <ContactForm
+    phone="+64 21 000 0000"
+    address="Corner of Main & Oak, Wellington"
+  />
+</Layout>

@@ -1,0 +1,32 @@
+---
+interface Props {
+  items: { title: string; description: string }[];
+}
+
+const { items } = Astro.props;
+---
+
+<section style="padding: 5rem 1.5rem; background: var(--bg);" aria-labelledby="values-heading">
+  <div style="max-width: 72rem; margin: 0 auto;">
+    <h2
+      id="values-heading"
+      style="text-align: center; font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; color: var(--text); margin: 0 0 3rem;"
+    >
+      What we stand for
+    </h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem;">
+      {items.map((item) => (
+        <article
+          style="border-left: 4px solid var(--primary); padding: 1.5rem 1.5rem 1.5rem 1.75rem; background: var(--surface); border-radius: 0 var(--radius) var(--radius) 0;"
+        >
+          <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--text); margin: 0 0 0.625rem;">
+            {item.title}
+          </h3>
+          <p style="color: var(--text-muted); margin: 0; line-height: 1.7; font-size: 0.9375rem;">
+            {item.description}
+          </p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

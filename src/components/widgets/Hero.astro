@@ -1,0 +1,55 @@
+---
+interface Props {
+  tagline?: string;
+  title: string;
+  subtitle?: string;
+  ctaPrimary?: { text: string; href: string };
+  ctaSecondary?: { text: string; href: string };
+}
+
+const { tagline, title, subtitle, ctaPrimary, ctaSecondary } = Astro.props;
+---
+
+<section
+  style="background: linear-gradient(180deg, var(--gradient-start), var(--gradient-end)); border-bottom: 1px solid var(--border); padding: 6rem 1.5rem 5rem;"
+  aria-labelledby="hero-heading"
+>
+  <div style="max-width: 56rem; margin: 0 auto; text-align: center;">
+    {tagline && (
+      <p style="color: var(--primary); font-weight: 600; font-size: 0.875rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; font-family: 'Nunito', system-ui, sans-serif;">
+        {tagline}
+      </p>
+    )}
+    <h1
+      id="hero-heading"
+      style="font-size: clamp(2.25rem, 5vw, 3.75rem); font-weight: 800; color: var(--text); line-height: 1.1; margin: 0 0 1.5rem;"
+    >
+      {title}
+    </h1>
+    {subtitle && (
+      <p style="font-size: 1.25rem; color: var(--text-muted); max-width: 40rem; margin: 0 auto 2.5rem;">
+        {subtitle}
+      </p>
+    )}
+    {(ctaPrimary || ctaSecondary) && (
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        {ctaPrimary && (
+          <a
+            href={ctaPrimary.href}
+            style="background: var(--accent); color: #1C1A18; padding: 0.875rem 2rem; border-radius: var(--radius); font-weight: 600; font-size: 1rem; box-shadow: var(--shadow); display: inline-block; font-family: 'Nunito', system-ui, sans-serif;"
+          >
+            {ctaPrimary.text}
+          </a>
+        )}
+        {ctaSecondary && (
+          <a
+            href={ctaSecondary.href}
+            style="background: var(--surface); color: var(--primary); padding: 0.875rem 2rem; border-radius: var(--radius); font-weight: 600; font-size: 1rem; border: 2px solid var(--border); display: inline-block; font-family: 'Nunito', system-ui, sans-serif;"
+          >
+            {ctaSecondary.text}
+          </a>
+        )}
+      </div>
+    )}
+  </div>
+</section>
