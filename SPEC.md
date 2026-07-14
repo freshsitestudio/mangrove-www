@@ -13,7 +13,7 @@ All 18 fixed token names (AD-4). Names are immutable; these are the Warm Local l
   --bg-dark:         #431407;
   --surface:         #FFFFFF;
   --text:            #1C1A18;
-  --text-muted:      #78716C;
+  --text-muted:      #706B66;
   --primary:         #9A3412;
   --primary-dark:    #7C2D12;
   --accent:          #84CC16;
@@ -180,7 +180,7 @@ Also required (§10 / §18 contract):
 ## Implementation Notes
 
 - **Mobile nav:** Must have solid background on mobile expansion — no transparent overlays. Background is `var(--bg)` (warm off-white) on the dropdown panel. Collapse sets `display: "none"`; resize resets `aria-expanded`.
-- **Scheme picker removed:** `warm-local` is palette-locked. No `[data-scheme]` CSS, no picker UI, no `DEFAULT_SCHEME` in `build.env`.
+- **Scheme picker absent:** `warm-local` is palette-locked from day one — no picker shipped. No `[data-scheme]` CSS, no picker UI, no `DEFAULT_SCHEME` in `build.env`.
 - **Soft warm hero:** Hero uses a gentle warm gradient (`--gradient-start` → `--gradient-end`) — not `linear-gradient()` with cool blues. Flat heritage cream is reserved for `thorndon-traditional`.
 - **Lime accent CTAs:** `--accent: #84CC16` is for primary CTAs and highlights only. Dark text `#1C1A18` on lime clears WCAG AA (white-on-lime fails 4.5:1).
 - **Rounded geometry:** `--radius: 1rem` and `--radius-lg: 1.25rem` — inviting, community-feel cards and buttons.
@@ -188,6 +188,6 @@ Also required (§10 / §18 contract):
 - **Contact page structure:** `PageHero → ContactForm` only. Do **not** insert `ContactInfo` between them.
 - **About page Content widget:** `Content.astro` uses `set:html` to render a body HTML string. Keep body content as reusable placeholder copy.
 - **`focus-visible` outlines:** All interactive elements inherit `outline: 2px solid var(--primary)` from `global.css`.
-- **WCAG AA:** `--text-muted: #78716C` on `--bg` / `--bg-alt` meets 4.5:1 minimum.
+- **WCAG AA:** `--text-muted: #706B66` on `--bg` (≈ 4.96:1) and `--bg-alt` (≈ 4.73:1) meets 4.5:1 minimum.
 - **Decorative images:** Use `alt=""` for purely decorative images; provide meaningful alt text for content images.
 - **Typography split:** Nunito for `h1`–`h6` and UI; Lora on `body`. Logo link uses Nunito explicitly (weight ≤ 800).

@@ -28,7 +28,7 @@ Friendly and community-feel — this theme reads like a neighbourhood spot you w
 
 ## Colour Palette
 
-Locked warm palette: off-white background `#FFF7ED`, brick primary `#9A3412`, stone muted `#78716C`, and lime accent `#84CC16` reserved for CTAs and highlights only. **No colour scheme picker** — `palette_locked: true`.
+Locked warm palette: off-white background `#FFF7ED`, brick primary `#9A3412`, stone muted `#706B66`, and lime accent `#84CC16` reserved for CTAs and highlights only. **No colour scheme picker** — `palette_locked: true`.
 
 Colours that feel wrong here: cool blues, stark corporate greys, dark-mode neon, heritage walnut creams, high-formality serif-only layouts.
 

@@ -17,8 +17,8 @@
 
   /* Text */
   --text:            #1C1A18;
-  /* #78716C ≈ 4.6:1 on --bg; ≈ 4.5:1 on --bg-alt (WCAG AA) */
-  --text-muted:      #78716C;
+  /* #706B66 ≈ 4.96:1 on --bg; ≈ 4.73:1 on --bg-alt (WCAG AA) — Round 57 */
+  --text-muted:      #706B66;
 
   /* Brand */
   --primary:         #9A3412;   /* Brick red — §6 token_delta */
