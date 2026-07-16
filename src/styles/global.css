@@ -7,6 +7,9 @@
    ============================================================ */
 
 :root {
+  /* Tailwind v4 named-color tokens */
+  --color-white: #fff;
+  --color-black: #000;
   /* Backgrounds */
   --bg:              #FFF7ED;   /* Warm cream-orange — §6 token_delta */
   --bg-alt:          #FEF3C7;   /* Warm yellow-white */
