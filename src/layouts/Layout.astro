@@ -24,6 +24,14 @@ const siteName = envOr("SITE_NAME", "Local Favourite");
 const siteUrl = envOr("SITE_URL", "");
 const navCtaText = envOr("NAV_CTA_TEXT", "Visit us");
 const navCtaHref = envOr("NAV_CTA_HREF", "/contact");
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
+const hasLogoSvg = existsSync(fileURLToPath(new URL("../../public/logo.svg", import.meta.url)));
+const hasLogoPng = existsSync(fileURLToPath(new URL("../../public/logo.png", import.meta.url)));
+const logoSrc = hasLogoSvg ? "/logo.svg" : (hasLogoPng ? "/logo.png" : null);
+
+---
 ---
 
 <!doctype html>
@@ -54,9 +62,10 @@ const navCtaHref = envOr("NAV_CTA_HREF", "/contact");
       >
         <a
           href="/"
-          style="font-family: 'Nunito', system-ui, sans-serif; font-weight: 800; font-size: 1.125rem; color: var(--text);"
+          style="display: inline-flex; align-items: center; gap: 0.625rem; color: var(--text); text-decoration: none;"
         >
-          {siteName}
+          {logoSrc && <img src={logoSrc} alt={`${siteName} logo`} style="height: 1.875rem; width: auto; display: block;" />}
+          <span style="white-space: nowrap;">{siteName}</span>
         </a>
 
         <!-- Desktop nav links -->
