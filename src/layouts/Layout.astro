@@ -31,7 +31,7 @@ const hasLogoSvg = existsSync(fileURLToPath(new URL("../../public/logo.svg", imp
 const hasLogoPng = existsSync(fileURLToPath(new URL("../../public/logo.png", import.meta.url)));
 const logoSrc = hasLogoSvg ? "/logo.svg" : (hasLogoPng ? "/logo.png" : null);
 
----
+
 ---
 
 <!doctype html>
