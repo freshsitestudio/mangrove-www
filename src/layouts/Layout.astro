@@ -19,20 +19,20 @@ const envOr = (key: string, fallback: string) => {
 
 const description =
   descriptionProp ??
-  envOr("SITE_TAGLINE", "Friendly and community-feel — the kind of site that makes people want to walk in.");
-const siteName = envOr("SITE_NAME", "Local Favourite");
+  envOr("SITE_TAGLINE", "Warm and established — feels like a business that's been here and will still be here.");
+const siteName = envOr("SITE_NAME", "");
 const siteUrl = envOr("SITE_URL", "");
-const navCtaText = envOr("NAV_CTA_TEXT", "Visit us");
+const navCtaText = envOr("NAV_CTA_TEXT", "");
 const navCtaHref = envOr("NAV_CTA_HREF", "/contact");
-import { existsSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 
-const hasLogoSvg = existsSync(fileURLToPath(new URL("../../public/logo.svg", import.meta.url)));
-const hasLogoPng = existsSync(fileURLToPath(new URL("../../public/logo.png", import.meta.url)));
-const logoSrc = hasLogoSvg ? "/logo.svg" : (hasLogoPng ? "/logo.png" : null);
-
-
+// Auto-detect the customer's logo at build time using Vite's glob.
+// import.meta.glob returns filesystem-style paths (with /public prefix);
+// strip that prefix so the rendered HTML uses a proper URL path.
+const logoModules = import.meta.glob("/public/logo.{svg,png,jpg}", { eager: true });
+const logoKeys = Object.keys(logoModules);
+const logoSrc = logoKeys.length > 0 ? logoKeys[0].replace(/^\/public/, "") : null;
 ---
+
 
 <!doctype html>
 <html lang="en">
