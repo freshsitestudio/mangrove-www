@@ -1,0 +1,29 @@
+{
+  "_comment": "Warm Local's hero is always centered \u2014 cafes work best that way. We override the default 'split-right' for trades so even plumber/electrician sites that pick this theme stay centered.",
+  "hero_variants": {
+    "plumber": "centered",
+    "electrician": "centered",
+    "auto": "centered",
+    "construction": "centered"
+  },
+  "color_variants": {
+    "plumber": {
+      "--primary": "#1D4ED8",
+      "--accent": "#D97706"
+    },
+    "cafe": {
+      "--primary": "#92400E",
+      "--accent": "#F59E0B"
+    }
+  },
+  "page_compositions": {
+    "plumber": [
+      "Hero",
+      "PainGrid",
+      "AudienceGrid",
+      "ProcessSteps",
+      "Testimonial",
+      "CTABand"
+    ]
+  }
+}
