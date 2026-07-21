@@ -24,6 +24,7 @@ const siteName = envOr("SITE_NAME", "");
 const siteUrl = envOr("SITE_URL", "");
 const navCtaText = envOr("NAV_CTA_TEXT", "");
 const navCtaHref = envOr("NAV_CTA_HREF", "/contact");
+const fontUrl = envOr("SITE_GOOGLE_FONTS", "https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Lora:wght@400;500;600:wght@400;500;600;700;800&display=swap");
 
 // Auto-detect the customer's logo at build time using Vite's glob.
 // import.meta.glob returns filesystem-style paths (with /public prefix);
@@ -44,10 +45,10 @@ const logoSrc = logoKeys.length > 0 ? logoKeys[0].replace(/^\/public/, "") : nul
     <title>{title} | {siteName}</title>
 
     <!-- Google Fonts CDN — Nunito (headings) + Lora (body) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Lora:wght@400;500;600&display=swap"
+    $1
+$2
+$3
+      href={fontUrl}
       rel="stylesheet"
     />
   </head>
