@@ -7,17 +7,88 @@ interface Props {
 const { title, body } = Astro.props;
 ---
 
-<section style="padding: 5rem 1.5rem; background: var(--bg);" aria-labelledby="content-heading">
-  <div style="max-width: 56rem; margin: 0 auto;">
-    <h2
-      id="content-heading"
-      style="font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; color: var(--text); margin: 0 0 1.5rem;"
-    >
-      {title}
-    </h2>
-    <div
-      style="color: var(--text-muted); line-height: 1.8; font-size: 1.0625rem; max-width: 42rem;"
-      set:html={body}
-    />
+<section class="content-block" aria-labelledby="content-heading">
+  <div class="content-block__inner">
+    <h2 id="content-heading" class="content-block__title">{title}</h2>
+    <div class="content-block__body" set:html={body} />
   </div>
 </section>
+
+<style>
+  .content-block {
+    padding: var(--section-padding-y) 1.5rem;
+    background: var(--bg);
+  }
+
+  .content-block__inner {
+    max-width: 56rem;
+    margin: 0 auto;
+  }
+
+  .content-block__title {
+    font-size: calc(clamp(1.5rem, 3vw, 2.25rem) * var(--heading-scale));
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 1.5rem;
+  }
+
+  .content-block__body {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    line-height: 1.8;
+    font-size: 1.0625rem;
+    max-width: 42rem;
+  }
+
+  .content-block__body :global(p) {
+    margin: 0 0 1.25rem;
+  }
+
+  /* "Meet the team" subsection (proof-slice demo-content standard, injected via set:html) */
+  .content-block__body :global(.content-team) {
+    margin-top: 2.5rem;
+  }
+
+  .content-block__body :global(.content-team__heading) {
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 1.5rem;
+  }
+
+  .content-block__body :global(.content-team__grid) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1.75rem;
+    max-width: 38rem;
+  }
+
+  .content-block__body :global(.content-team__person) {
+    margin: 0;
+    text-align: center;
+  }
+
+  .content-block__body :global(.content-team__photo) {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 0.75rem;
+    box-shadow: var(--shadow);
+  }
+
+  .content-block__body :global(.content-team__name) {
+    display: block;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 800;
+    color: var(--text);
+    font-size: 0.9375rem;
+  }
+
+  .content-block__body :global(.content-team__role) {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+  }
+</style>

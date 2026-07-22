@@ -19,21 +19,22 @@ const envOr = (key: string, fallback: string) => {
 
 const description =
   descriptionProp ??
-  envOr("SITE_TAGLINE", "Warm and established — feels like a business that's been here and will still be here.");
-const siteName = envOr("SITE_NAME", "");
+  envOr("SITE_TAGLINE", "Friendly and community-feel — the kind of site that makes people want to walk in.");
+const siteName = envOr("SITE_NAME", "Local Favourite");
 const siteUrl = envOr("SITE_URL", "");
-const navCtaText = envOr("NAV_CTA_TEXT", "");
+const navCtaText = envOr("NAV_CTA_TEXT", "Visit us");
 const navCtaHref = envOr("NAV_CTA_HREF", "/contact");
-const fontUrl = envOr("SITE_GOOGLE_FONTS", "https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Lora:wght@400;500;600:wght@400;500;600;700;800&display=swap");
+const fontUrl = envOr(
+  "SITE_GOOGLE_FONTS",
+  "https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Lora:wght@400;500;600&display=swap"
+);
 
-// Auto-detect the customer's logo at build time using Vite's glob.
-// import.meta.glob returns filesystem-style paths (with /public prefix);
-// strip that prefix so the rendered HTML uses a proper URL path.
+// Customer logo: auto-detect public/logo.{svg,png,jpg}, else SITE_LOGO, else placeholder.
 const logoModules = import.meta.glob("/public/logo.{svg,png,jpg}", { eager: true });
 const logoKeys = Object.keys(logoModules);
-const logoSrc = logoKeys.length > 0 ? logoKeys[0].replace(/^\/public/, "") : null;
+const autoLogoSrc = logoKeys.length > 0 ? logoKeys[0].replace(/^\/public/, "") : null;
+const siteLogo = autoLogoSrc ?? envOr("SITE_LOGO", "/placeholder-logo.svg");
 ---
-
 
 <!doctype html>
 <html lang="en">
@@ -45,56 +46,33 @@ const logoSrc = logoKeys.length > 0 ? logoKeys[0].replace(/^\/public/, "") : nul
     <title>{title} | {siteName}</title>
 
     <!-- Google Fonts CDN — Nunito (headings) + Lora (body) -->
-    $1
-$2
-$3
-      href={fontUrl}
-      rel="stylesheet"
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href={fontUrl} rel="stylesheet" />
   </head>
   <body>
-    <!-- Navigation -->
-    <nav
-      style="height: var(--nav-height); background: var(--bg); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50;"
-      aria-label="Main navigation"
-    >
-      <div
-        style="max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; height: 100%; display: flex; align-items: center; justify-content: space-between;"
-      >
-        <a
-          href="/"
-          style="display: inline-flex; align-items: center; gap: 0.625rem; color: var(--text); text-decoration: none;"
-        >
-          {logoSrc && <img src={logoSrc} alt={`${siteName} logo`} style="height: 1.875rem; width: auto; display: block;" />}
-          <span style="white-space: nowrap;">{siteName}</span>
+    <!-- Navigation: solid warm bar, friendly (Layout DNA) -->
+    <nav class="site-nav" aria-label="Main navigation">
+      <div class="site-nav__inner">
+        <a href="/" class="site-nav__brand">
+          <img src={siteLogo} alt={siteName} class="site-nav__logo" />
+          <span class="site-nav__brand-text">{siteName}</span>
         </a>
 
-        <!-- Desktop nav links -->
-        <ul
-          id="nav-links"
-          style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0; align-items: center;"
-        >
-          <li><a href="/" style="color: var(--text-muted); font-weight: 500; font-family: 'Nunito', system-ui, sans-serif;">Home</a></li>
-          <li><a href="/about" style="color: var(--text-muted); font-weight: 500; font-family: 'Nunito', system-ui, sans-serif;">About</a></li>
-          <li><a href="/services" style="color: var(--text-muted); font-weight: 500; font-family: 'Nunito', system-ui, sans-serif;">Services</a></li>
-          <li><a href="/contact" style="color: var(--text-muted); font-weight: 500; font-family: 'Nunito', system-ui, sans-serif;">Contact</a></li>
-          <li>
-            <a
-              href={navCtaHref}
-              style="background: var(--accent); color: #1C1A18; padding: 0.5rem 1.25rem; border-radius: var(--radius); font-weight: 600; font-family: 'Nunito', system-ui, sans-serif;"
-            >
-              {navCtaText}
-            </a>
-          </li>
+        <ul id="nav-links" class="site-nav__links">
+          <li><a href="/" class="site-nav__link">Home</a></li>
+          <li><a href="/about" class="site-nav__link">About</a></li>
+          <li><a href="/services" class="site-nav__link">Services</a></li>
+          <li><a href="/contact" class="site-nav__link">Contact</a></li>
+          <li><a href={navCtaHref} class="site-nav__cta">{navCtaText}</a></li>
         </ul>
 
-        <!-- Mobile hamburger -->
         <button
           id="nav-toggle"
+          class="site-nav__toggle"
           aria-controls="nav-links"
           aria-expanded="false"
           aria-label="Toggle navigation menu"
-          style="display: none; background: none; border: none; cursor: pointer; padding: 0.25rem;"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <line x1="3" y1="6" x2="21" y2="6" />
@@ -109,16 +87,44 @@ $3
       <slot />
     </main>
 
-    <!-- Footer -->
-    <footer
-      style="background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; margin-top: 4rem; text-align: center;"
-    >
-      <p style="opacity: 0.7; font-size: 0.875rem; margin: 0; font-family: 'Nunito', system-ui, sans-serif;">
-        &copy; {new Date().getFullYear()} {siteName}. All rights reserved.
+    <!-- Footer: community-feel warm multi-column (Layout DNA) -->
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <div>
+          <p class="site-footer__brand">
+            <img src={siteLogo} alt="" class="site-footer__logo" />
+            {siteName}
+          </p>
+          <p class="site-footer__tagline">{description}</p>
+        </div>
+        <div>
+          <p class="site-footer__heading">Explore</p>
+          <ul class="site-footer__links">
+            <li><a href="/about">About</a></li>
+            <li><a href="/services">Services</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="site-footer__heading">Find us</p>
+          <ul class="site-footer__links site-footer__hours">
+            <li><span>Mon–Fri</span><span>7:00–17:00</span></li>
+            <li><span>Sat–Sun</span><span>8:00–15:00</span></li>
+          </ul>
+        </div>
+        <div>
+          <p class="site-footer__heading">Say hello</p>
+          <ul class="site-footer__links">
+            <li><a href="/contact">Contact</a></li>
+            <li><a href={navCtaHref}>{navCtaText}</a></li>
+          </ul>
+        </div>
+      </div>
+      <p class="site-footer__bottom">
+        &copy; {new Date().getFullYear()} {siteName}. Made with love for the neighbourhood.
       </p>
     </footer>
 
-    <!-- Mobile nav -->
+    <!-- Mobile nav + motion reveal (Layout DNA: bouncy hover, subtle reveal on scroll) -->
     <script is:inline>
       (function () {
         const toggle = document.getElementById("nav-toggle");
@@ -128,40 +134,40 @@ $3
             const expanded = toggle.getAttribute("aria-expanded") === "true";
             const next = !expanded;
             toggle.setAttribute("aria-expanded", String(next));
-            links.style.display = next ? "flex" : "none";
+            links.classList.toggle("is-open", next);
           });
         }
 
         function handleResize() {
           if (!toggle || !links) return;
-          if (window.innerWidth < 768) {
-            toggle.style.display = "block";
-            links.style.display = "none";
-            links.style.flexDirection = "column";
-            links.style.position = "absolute";
-            links.style.top = "var(--nav-height)";
-            links.style.left = "0";
-            links.style.right = "0";
-            links.style.background = "var(--bg)";
-            links.style.padding = "1rem 1.5rem";
-            links.style.borderBottom = "1px solid var(--border)";
+          if (window.innerWidth >= 768) {
+            links.classList.remove("is-open");
             toggle.setAttribute("aria-expanded", "false");
-          } else {
-            toggle.style.display = "none";
-            toggle.setAttribute("aria-expanded", "false");
-            links.style.display = "flex";
-            links.style.flexDirection = "";
-            links.style.position = "";
-            links.style.top = "";
-            links.style.left = "";
-            links.style.right = "";
-            links.style.background = "";
-            links.style.padding = "";
-            links.style.borderBottom = "";
           }
         }
-        handleResize();
         window.addEventListener("resize", handleResize);
+
+        var reduceMotion =
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reduceMotion || !window.IntersectionObserver) return;
+
+        var revealEls = document.querySelectorAll("[data-reveal]");
+        if (!revealEls.length) return;
+
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-revealed");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+        );
+        revealEls.forEach(function (el) {
+          observer.observe(el);
+        });
       })();
     </script>
   </body>

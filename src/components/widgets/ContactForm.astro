@@ -7,34 +7,21 @@ interface Props {
 const { phone, address } = Astro.props;
 ---
 
-<section style="padding: 5rem 1.5rem; background: var(--bg);" aria-labelledby="contact-form-heading">
-  <div style="max-width: 42rem; margin: 0 auto;">
-    <h2
-      id="contact-form-heading"
-      style="font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; color: var(--text); margin: 0 0 2rem;"
-    >
-      Send us a message
-    </h2>
+<section class="contact-form" aria-labelledby="contact-form-heading">
+  <div class="contact-form__inner">
+    <h2 id="contact-form-heading" class="contact-form__heading">Send us a message</h2>
 
     {(phone || address) && (
-      <div style="margin-bottom: 2rem; color: var(--text-muted);">
-        {phone && <p style="margin: 0 0 0.5rem;"><strong>Phone:</strong> {phone}</p>}
-        {address && <p style="margin: 0;"><strong>Address:</strong> {address}</p>}
+      <div class="contact-form__details">
+        {phone && <p><strong>Phone:</strong> {phone}</p>}
+        {address && <p><strong>Address:</strong> {address}</p>}
       </div>
     )}
 
-    <form
-      name="contact"
-      method="POST"
-      action="/contact"
-      style="display: flex; flex-direction: column; gap: 1.5rem;"
-    >
-      <div>
-        <label
-          for="contact-name"
-          style="display: block; font-weight: 600; color: var(--text); margin-bottom: 0.375rem; font-size: 0.9375rem;"
-        >
-          Your name <span aria-hidden="true" style="color: var(--primary);">*</span>
+    <form name="contact" method="POST" action="/contact" class="contact-form__form">
+      <div class="contact-form__field">
+        <label for="contact-name">
+          Your name <span aria-hidden="true" class="contact-form__required">*</span>
         </label>
         <input
           id="contact-name"
@@ -43,16 +30,12 @@ const { phone, address } = Astro.props;
           required
           autocomplete="name"
           placeholder="Jane Smith"
-          style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; color: var(--text); background: var(--surface); font-family: inherit;"
         />
       </div>
 
-      <div>
-        <label
-          for="contact-email"
-          style="display: block; font-weight: 600; color: var(--text); margin-bottom: 0.375rem; font-size: 0.9375rem;"
-        >
-          Email address <span aria-hidden="true" style="color: var(--primary);">*</span>
+      <div class="contact-form__field">
+        <label for="contact-email">
+          Email address <span aria-hidden="true" class="contact-form__required">*</span>
         </label>
         <input
           id="contact-email"
@@ -61,16 +44,12 @@ const { phone, address } = Astro.props;
           required
           autocomplete="email"
           placeholder="jane@example.com"
-          style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; color: var(--text); background: var(--surface); font-family: inherit;"
         />
       </div>
 
-      <div>
-        <label
-          for="contact-message"
-          style="display: block; font-weight: 600; color: var(--text); margin-bottom: 0.375rem; font-size: 0.9375rem;"
-        >
-          Message <span aria-hidden="true" style="color: var(--primary);">*</span>
+      <div class="contact-form__field">
+        <label for="contact-message">
+          Message <span aria-hidden="true" class="contact-form__required">*</span>
         </label>
         <textarea
           id="contact-message"
@@ -78,56 +57,156 @@ const { phone, address } = Astro.props;
           required
           rows="5"
           placeholder="Tell us how we can help…"
-          style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; color: var(--text); background: var(--surface); font-family: inherit; resize: vertical;"
         ></textarea>
       </div>
 
-      <p style="color: var(--text-muted); font-size: 0.875rem; margin: 0;">
-        <span style="color: var(--primary);">*</span> Required fields
+      <p class="contact-form__note">
+        <span class="contact-form__required">*</span> Required fields
       </p>
 
-      <button
-        type="submit"
-        style="background: var(--primary); color: #fff; padding: 0.875rem 2rem; border-radius: var(--radius); font-weight: 600; font-size: 1rem; border: none; cursor: pointer; align-self: flex-start; font-family: inherit;"
-      >
-        Send message
-      </button>
+      <button type="submit" class="contact-form__submit">Send message</button>
     </form>
-
-    <script is:inline>
-      (function () {
-        const form = document.querySelector('form[name="contact"]');
-        if (!form) return;
-
-        form.querySelectorAll("input, textarea").forEach(function (field) {
-          field.addEventListener("input", function () {
-            field.removeAttribute("aria-invalid");
-            field.style.borderColor = "";
-          });
-        });
-
-        form.addEventListener("submit", function (e) {
-          let valid = true;
-          form.querySelectorAll("[required]").forEach(function (field) {
-            const empty = !field.value.trim();
-            const emailBad =
-              field.type === "email" && field.value.trim() && !field.checkValidity();
-            if (empty || emailBad) {
-              field.style.borderColor = "#DC2626";
-              field.setAttribute("aria-invalid", "true");
-              valid = false;
-            } else {
-              field.style.borderColor = "";
-              field.removeAttribute("aria-invalid");
-            }
-          });
-          if (!valid) {
-            e.preventDefault();
-            const first = form.querySelector("[aria-invalid='true']");
-            if (first) first.focus();
-          }
-        });
-      })();
-    </script>
   </div>
 </section>
+
+<style>
+  .contact-form {
+    padding: var(--section-padding-y) 1.5rem;
+    background: var(--bg);
+  }
+
+  .contact-form__inner {
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+
+  .contact-form__heading {
+    font-size: calc(clamp(1.5rem, 3vw, 2rem) * var(--heading-scale));
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 2rem;
+  }
+
+  .contact-form__details {
+    margin-bottom: 2rem;
+    color: var(--text-muted);
+    font-family: 'Lora', Georgia, serif;
+  }
+
+  .contact-form__details p {
+    margin: 0 0 0.5rem;
+  }
+
+  .contact-form__details p:last-child {
+    margin: 0;
+  }
+
+  .contact-form__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .contact-form__field label {
+    display: block;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.375rem;
+    font-size: 0.9375rem;
+    font-family: 'Nunito', system-ui, sans-serif;
+  }
+
+  .contact-form__required {
+    color: var(--primary);
+  }
+
+  .contact-form__field input,
+  .contact-form__field textarea {
+    width: 100%;
+    padding: 0.875rem 1.125rem;
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    font-size: 1rem;
+    color: var(--text);
+    background: var(--surface);
+    font-family: 'Lora', Georgia, serif;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .contact-form__field textarea {
+    resize: vertical;
+  }
+
+  .contact-form__field input:focus,
+  .contact-form__field textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(154, 52, 18, 0.12);
+  }
+
+  .contact-form__field input[aria-invalid="true"],
+  .contact-form__field textarea[aria-invalid="true"] {
+    border-color: #DC2626;
+  }
+
+  .contact-form__note {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin: 0;
+  }
+
+  .contact-form__submit {
+    background: var(--accent);
+    color: #1C1A18;
+    padding: 0.9375rem 2.25rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    align-self: flex-start;
+    font-family: 'Nunito', system-ui, sans-serif;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  }
+
+  @media (hover: hover) {
+    .contact-form__submit:hover {
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: var(--shadow-lg);
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    const form = document.querySelector('form[name="contact"]');
+    if (!form) return;
+
+    form.querySelectorAll("input, textarea").forEach(function (field) {
+      field.addEventListener("input", function () {
+        field.removeAttribute("aria-invalid");
+      });
+    });
+
+    form.addEventListener("submit", function (e) {
+      let valid = true;
+      form.querySelectorAll("[required]").forEach(function (field) {
+        const empty = !field.value.trim();
+        const emailBad =
+          field.type === "email" && field.value.trim() && !field.checkValidity();
+        if (empty || emailBad) {
+          field.setAttribute("aria-invalid", "true");
+          valid = false;
+        } else {
+          field.removeAttribute("aria-invalid");
+        }
+      });
+      if (!valid) {
+        e.preventDefault();
+        const first = form.querySelector("[aria-invalid='true']");
+        if (first) first.focus();
+      }
+    });
+  })();
+</script>

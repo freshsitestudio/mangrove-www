@@ -8,44 +8,31 @@ interface Props {
 }
 
 const { tagline, title, subtitle, ctaPrimary, ctaSecondary } = Astro.props;
+
+// Layout DNA: fullBleedPhoto — soft warm background photo with a warm gradient scrim so
+// centered copy stays readable; rounded CTA, warm copy sits below the headline.
+const heroImage =
+  "https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1600&q=80";
 ---
 
 <section
-  style="background: linear-gradient(180deg, var(--gradient-start), var(--gradient-end)); border-bottom: 1px solid var(--border); padding: 6rem 1.5rem 5rem;"
+  class="hero-photo"
+  style={`background-image: linear-gradient(180deg, rgba(67, 20, 7, 0.15), rgba(67, 20, 7, 0.65)), url(${heroImage});`}
   aria-labelledby="hero-heading"
 >
-  <div style="max-width: 56rem; margin: 0 auto; text-align: center;">
-    {tagline && (
-      <p style="color: var(--primary); font-weight: 600; font-size: 0.875rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; font-family: 'Nunito', system-ui, sans-serif;">
-        {tagline}
-      </p>
-    )}
-    <h1
-      id="hero-heading"
-      style="font-size: clamp(2.25rem, 5vw, 3.75rem); font-weight: 800; color: var(--text); line-height: 1.1; margin: 0 0 1.5rem;"
-    >
-      {title}
-    </h1>
-    {subtitle && (
-      <p style="font-size: 1.25rem; color: var(--text-muted); max-width: 40rem; margin: 0 auto 2.5rem;">
-        {subtitle}
-      </p>
-    )}
+  <div class="hero-photo__inner">
+    {tagline && <p class="hero-photo__tagline">{tagline}</p>}
+    <h1 id="hero-heading" class="hero-photo__title">{title}</h1>
+    {subtitle && <p class="hero-photo__subtitle">{subtitle}</p>}
     {(ctaPrimary || ctaSecondary) && (
-      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+      <div class="hero-photo__actions">
         {ctaPrimary && (
-          <a
-            href={ctaPrimary.href}
-            style="background: var(--accent); color: #1C1A18; padding: 0.875rem 2rem; border-radius: var(--radius); font-weight: 600; font-size: 1rem; box-shadow: var(--shadow); display: inline-block; font-family: 'Nunito', system-ui, sans-serif;"
-          >
+          <a href={ctaPrimary.href} class="hero-photo__btn hero-photo__btn--primary">
             {ctaPrimary.text}
           </a>
         )}
         {ctaSecondary && (
-          <a
-            href={ctaSecondary.href}
-            style="background: var(--surface); color: var(--primary); padding: 0.875rem 2rem; border-radius: var(--radius); font-weight: 600; font-size: 1rem; border: 2px solid var(--border); display: inline-block; font-family: 'Nunito', system-ui, sans-serif;"
-          >
+          <a href={ctaSecondary.href} class="hero-photo__btn hero-photo__btn--secondary">
             {ctaSecondary.text}
           </a>
         )}
@@ -53,3 +40,85 @@ const { tagline, title, subtitle, ctaPrimary, ctaSecondary } = Astro.props;
     )}
   </div>
 </section>
+
+<style>
+  .hero-photo {
+    min-height: var(--hero-min-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+  }
+
+  .hero-photo__inner {
+    max-width: 44rem;
+    padding: 4rem 1.5rem;
+  }
+
+  .hero-photo__tagline {
+    display: inline-flex;
+    color: #FEF3C7;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    letter-spacing: 0.04em;
+    margin: 0 0 1rem;
+    font-family: 'Nunito', system-ui, sans-serif;
+  }
+
+  .hero-photo__title {
+    font-size: calc(clamp(2.25rem, 5vw, 3.75rem) * var(--heading-scale));
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.12;
+    margin: 0 0 1.25rem;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Warm copy below headline, per DNA */
+  .hero-photo__subtitle {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1.1875rem;
+    color: rgba(255, 247, 237, 0.92);
+    max-width: 38rem;
+    margin: 0 auto 2.25rem;
+  }
+
+  .hero-photo__actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .hero-photo__btn {
+    font-family: 'Nunito', system-ui, sans-serif;
+    padding: 0.9375rem 2.25rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 1rem;
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  }
+
+  .hero-photo__btn--primary {
+    background: var(--accent);
+    color: #1C1A18;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .hero-photo__btn--secondary {
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(6px);
+  }
+
+  @media (hover: hover) {
+    .hero-photo__btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      text-decoration: none;
+    }
+  }
+</style>

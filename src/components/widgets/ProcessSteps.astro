@@ -6,33 +6,83 @@ interface Props {
 const { steps } = Astro.props;
 ---
 
-<section style="padding: 5rem 1.5rem; background: var(--bg-alt);" aria-labelledby="process-heading">
-  <div style="max-width: 56rem; margin: 0 auto;">
-    <h2
-      id="process-heading"
-      style="text-align: center; font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; color: var(--text); margin: 0 0 3rem;"
-    >
-      How it works
-    </h2>
-    <ol style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2rem;">
+<section class="process-steps" aria-labelledby="process-heading">
+  <div class="process-steps__inner">
+    <h2 id="process-heading" class="process-steps__heading">How it works</h2>
+    <ol class="process-steps__list">
       {steps.map((step) => (
-        <li style="display: flex; gap: 1.5rem; align-items: flex-start;">
-          <span
-            aria-hidden="true"
-            style="flex-shrink: 0; width: 3rem; height: 3rem; border-radius: 50%; background: var(--primary); color: #fff; font-weight: 600; font-size: 1.125rem; display: flex; align-items: center; justify-content: center;"
-          >
-            {step.number}
-          </span>
+        <li class="process-steps__item">
+          <span class="process-steps__number" aria-hidden="true">{step.number}</span>
           <div>
-            <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--text); margin: 0 0 0.5rem;">
-              {step.title}
-            </h3>
-            <p style="color: var(--text-muted); margin: 0; line-height: 1.7;">
-              {step.description}
-            </p>
+            <h3 class="process-steps__title">{step.title}</h3>
+            <p class="process-steps__desc">{step.description}</p>
           </div>
         </li>
       ))}
     </ol>
   </div>
 </section>
+
+<style>
+  .process-steps {
+    padding: var(--section-padding-y) 1.5rem;
+    background: var(--surface-alt);
+  }
+
+  .process-steps__inner {
+    max-width: 56rem;
+    margin: 0 auto;
+  }
+
+  .process-steps__heading {
+    text-align: center;
+    font-size: calc(clamp(1.5rem, 3vw, 2.25rem) * var(--heading-scale));
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 3rem;
+  }
+
+  .process-steps__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .process-steps__item {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .process-steps__number {
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 1.125rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .process-steps__title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 0.5rem;
+  }
+
+  .process-steps__desc {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.7;
+  }
+</style>

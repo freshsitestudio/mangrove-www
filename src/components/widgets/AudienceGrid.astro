@@ -4,29 +4,75 @@ interface Props {
 }
 
 const { items } = Astro.props;
+
+// Layout DNA: photoCards — photography-forward audience cards (warm-local default variant),
+// internal placeholder photo array, no new prop.
+const cardImages = [
+  "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1543007631-283050bb2e28?auto=format&fit=crop&w=600&q=80",
+];
 ---
 
-<section style="padding: 5rem 1.5rem; background: var(--bg-alt);" aria-labelledby="audience-heading">
-  <div style="max-width: 72rem; margin: 0 auto;">
-    <h2
-      id="audience-heading"
-      style="text-align: center; font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; color: var(--text); margin: 0 0 3rem;"
-    >
-      Built for businesses like yours
-    </h2>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-      {items.map((item) => (
-        <article
-          style="background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; box-shadow: var(--shadow);"
-        >
-          <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--text); margin: 0 0 0.75rem;">
-            {item.title}
-          </h3>
-          <p style="color: var(--text-muted); margin: 0; line-height: 1.7;">
-            {item.description}
-          </p>
+<section class="audience-grid" aria-labelledby="audience-heading">
+  <div class="audience-grid__inner">
+    <h2 id="audience-heading" class="audience-grid__heading">Built for places like yours</h2>
+    <div class="audience-grid__cards">
+      {items.map((item, i) => (
+        <article class="photo-card audience-grid__card" data-reveal>
+          <div
+            class="photo-card__image"
+            style={`background-image: url(${cardImages[i % cardImages.length]});`}
+            role="presentation"
+          >
+          </div>
+          <div class="photo-card__body">
+            <h3 class="audience-grid__card-title">{item.title}</h3>
+            <p class="audience-grid__card-desc">{item.description}</p>
+          </div>
         </article>
       ))}
     </div>
   </div>
 </section>
+
+<style>
+  .audience-grid {
+    padding: var(--section-padding-y) 1.5rem;
+    background: var(--surface-alt);
+  }
+
+  .audience-grid__inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .audience-grid__heading {
+    text-align: center;
+    font-size: calc(clamp(1.5rem, 3vw, 2.25rem) * var(--heading-scale));
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 3rem;
+  }
+
+  .audience-grid__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--grid-gap);
+  }
+
+  .audience-grid__card-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 0.625rem;
+  }
+
+  .audience-grid__card-desc {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.7;
+    font-size: 0.9375rem;
+  }
+</style>

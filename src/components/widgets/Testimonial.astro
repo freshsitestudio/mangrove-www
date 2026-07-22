@@ -7,33 +7,100 @@ interface Props {
 }
 
 const { quote, author, role, company } = Astro.props;
+
+// Layout DNA: singleQuote — first-name informal attribution. Drop company/formal title entirely;
+// show only a first name (+ a casual role word if present) for a warm, unpretentious feel.
+// Internal display logic only, no new prop.
+const firstName = author.split(" ")[0];
+const casualRole = role && !company ? role : undefined;
 ---
 
-<section style="padding: 5rem 1.5rem; background: var(--bg-alt);" aria-labelledby="testimonial-heading">
-  <div style="max-width: 48rem; margin: 0 auto; text-align: center;">
-    <h2
-      id="testimonial-heading"
-      class="visually-hidden"
-      style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap;"
-    >
-      Client testimonial
-    </h2>
-    <figure style="margin: 0;">
-      <blockquote
-        style="font-size: clamp(1.125rem, 2.5vw, 1.5rem); font-weight: 600; color: var(--text); line-height: 1.5; margin: 0 0 2rem; position: relative;"
-      >
-        <span aria-hidden="true" style="color: var(--primary); font-size: 4rem; line-height: 0; vertical-align: -1rem; margin-right: 0.25rem;">&ldquo;</span>
+<section class="testimonial" aria-labelledby="testimonial-heading">
+  <div class="testimonial__inner">
+    <h2 id="testimonial-heading" class="visually-hidden">Client testimonial</h2>
+    <figure class="testimonial__figure">
+      <blockquote class="testimonial__quote">
+        <span class="testimonial__mark" aria-hidden="true">&ldquo;</span>
         {quote}
-        <span aria-hidden="true" style="color: var(--primary); font-size: 4rem; line-height: 0; vertical-align: -1rem; margin-left: 0.25rem;">&rdquo;</span>
+        <span class="testimonial__mark" aria-hidden="true">&rdquo;</span>
       </blockquote>
-      <figcaption>
-        <strong style="color: var(--text); font-weight: 600;">{author}</strong>
-        {(role || company) && (
-          <span style="color: var(--text-muted); font-size: 0.9375rem; display: block; margin-top: 0.25rem;">
-            {role}{role && company && " · "}{company}
-          </span>
-        )}
+      <figcaption class="testimonial__caption">
+        <span class="testimonial__avatar" aria-hidden="true">{firstName.charAt(0)}</span>
+        <span>
+          <strong class="testimonial__author">{firstName}</strong>
+          {casualRole && <span class="testimonial__meta">{casualRole}</span>}
+        </span>
       </figcaption>
     </figure>
   </div>
 </section>
+
+<style>
+  .testimonial {
+    padding: var(--section-padding-y) 1.5rem;
+    background: var(--surface-alt);
+  }
+
+  .testimonial__inner {
+    max-width: 46rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .testimonial__figure {
+    margin: 0;
+  }
+
+  .testimonial__quote {
+    font-family: 'Lora', Georgia, serif;
+    font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.55;
+    margin: 0 0 2rem;
+  }
+
+  .testimonial__mark {
+    font-family: 'Nunito', system-ui, sans-serif;
+    color: var(--primary);
+    font-size: 3.5rem;
+    line-height: 0;
+    vertical-align: -0.9rem;
+  }
+
+  .testimonial__caption {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: left;
+  }
+
+  .testimonial__avatar {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #1C1A18;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 1.125rem;
+    flex-shrink: 0;
+  }
+
+  .testimonial__author {
+    font-family: 'Nunito', system-ui, sans-serif;
+    color: var(--text);
+    font-weight: 800;
+    display: block;
+  }
+
+  .testimonial__meta {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+    display: block;
+  }
+</style>

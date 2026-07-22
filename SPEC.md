@@ -37,6 +37,26 @@ Token deltas for this theme vs strict base (from `references/theme-validation.md
 | `--primary` | `#9A3412` |
 | `--accent` | `#84CC16` |
 
+## Layout DNA Tokens (AD-14)
+
+Theme-local extension — Epic 6. **Not** part of the fixed 18 (AD-4); names are shared across all
+themes but values and tier classification are theme-local. Declared in `:root` in `global.css`.
+
+| Token | Value | Tier | Notes |
+|---|---|---|---|
+| `--section-padding-y` | `7.5rem` | Design-Brief-overridable | Relaxed, generous — this theme's rhythm row |
+| `--container-max` | `74rem` | theme-fixed DNA | Airy measure for photo-forward layouts |
+| `--hero-min-height` | `72vh` | theme-fixed DNA | Full-bleed-photo hero floor — tall, not full-height |
+| `--heading-scale` | `1.05` | Design-Brief-overridable | Slightly bigger, friendlier display type |
+| `--surface-alt` | `var(--bg-alt)` | theme-fixed DNA | Warm alternating tone between sections |
+| `--surface-contrast` | `var(--bg-dark)` | theme-fixed DNA | Deep rust footer band |
+| `--motion-enabled` | `1` | Design-Brief-overridable | Bouncy hover on cards/CTAs, subtle scroll reveal |
+| `--card-radius` | `1rem` | theme-fixed DNA | Friendliest, most rounded of the E6-S8 batch |
+| `--grid-gap` | `2rem` | theme-fixed DNA | Relaxed, generous grid rhythm |
+
+Rule (AD-14 Rule 2): `@media (prefers-reduced-motion: reduce)` always overrides `--motion-enabled`
+regardless of tier.
+
 ## Google Fonts
 
 CDN only — no self-hosted fonts. Loaded in `Layout.astro`:
@@ -69,7 +89,7 @@ interface Props {
 }
 ```
 
-Soft warm gradient hero — `linear-gradient(180deg, var(--gradient-start), var(--gradient-end))`; primary CTA uses `--accent` (lime) with dark text `#1C1A18` for WCAG AA.
+`fullBleedPhoto` — full-bleed placeholder photo with a warm rust scrim gradient for text contrast, centered copy, warm subtitle below the headline, rounded pill CTAs (primary lime, secondary translucent-glass). `--gradient-start` / `--gradient-end` remain declared for token completeness but are not the hero's visual treatment (see Implementation Notes).
 
 ### PageHero.astro
 
@@ -191,3 +211,21 @@ Also required (§10 / §18 contract):
 - **WCAG AA:** `--text-muted: #706B66` on `--bg` (≈ 4.96:1) and `--bg-alt` (≈ 4.73:1) meets 4.5:1 minimum.
 - **Decorative images:** Use `alt=""` for purely decorative images; provide meaningful alt text for content images.
 - **Typography split:** Nunito for `h1`–`h6` and UI; Lora on `body`. Logo link uses Nunito explicitly (weight ≤ 800).
+- **Layout DNA (Phase A, E6-S8):** `fullBleedPhoto` Hero and `photoBanner` PageHero (both use a
+  placeholder Unsplash photo with a warm rust scrim — replace with real venue photography), solid
+  warm-cream sticky nav with a **pill-shaped** lime CTA, deep-rust footer with a "Find us" hours
+  column, `community-card` treatment (`--card-radius: 1rem`, medium-soft shadow, **bouncy** hover-lift
+  using a back-ease `cubic-bezier(0.34, 1.56, 0.64, 1)`), `photoCards` AudienceGrid (photo-top rounded
+  cards), `horizontalCards` ServiceCards (photography-forward wide rows, same bouncy hover),
+  `dualPath` CTABand (two equally-weighted rounded panels instead of one band + secondary link), and
+  `singleQuote` Testimonial reduced to **first-name only** (no company/title) with a circular
+  initial-avatar for an unpretentious, informal register.
+- **Logo pattern:** `public/placeholder-logo.svg` (friendly rounded mark) ships by default.
+  `Layout.astro` auto-detects `public/logo.{svg,png,jpg}` first, then falls back to `SITE_LOGO` env
+  var, then to `/placeholder-logo.svg`. See README "Replacing the Placeholder Logo".
+- **Motion:** `--motion-enabled: 1`. Cards/CTAs use bouncy `transform` hover-lift; `Layout.astro`
+  wires an `IntersectionObserver` for `[data-reveal]` fade/slide-in on scroll, gated behind
+  `prefers-reduced-motion` (AD-14 Rule 2).
+- **About page "Meet the team":** `Content.astro` body HTML includes a `.content-team` block with 2–4
+  circular portrait placeholders (`https://placehold.co/...`), names, and roles — AD-6 page order
+  unchanged.

@@ -6,27 +6,64 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<section style="padding: 5rem 1.5rem; background: var(--bg);" aria-labelledby="values-heading">
-  <div style="max-width: 72rem; margin: 0 auto;">
-    <h2
-      id="values-heading"
-      style="text-align: center; font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; color: var(--text); margin: 0 0 3rem;"
-    >
-      What we stand for
-    </h2>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem;">
+<section class="values-grid" aria-labelledby="values-heading">
+  <div class="values-grid__inner">
+    <h2 id="values-heading" class="values-grid__heading">What we stand for</h2>
+    <div class="values-grid__cards">
       {items.map((item) => (
-        <article
-          style="border-left: 4px solid var(--primary); padding: 1.5rem 1.5rem 1.5rem 1.75rem; background: var(--surface); border-radius: 0 var(--radius) var(--radius) 0;"
-        >
-          <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--text); margin: 0 0 0.625rem;">
-            {item.title}
-          </h3>
-          <p style="color: var(--text-muted); margin: 0; line-height: 1.7; font-size: 0.9375rem;">
-            {item.description}
-          </p>
+        <article class="values-grid__card">
+          <h3 class="values-grid__card-title">{item.title}</h3>
+          <p class="values-grid__card-desc">{item.description}</p>
         </article>
       ))}
     </div>
   </div>
 </section>
+
+<style>
+  .values-grid {
+    padding: var(--section-padding-y) 1.5rem;
+    background: var(--bg);
+  }
+
+  .values-grid__inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .values-grid__heading {
+    text-align: center;
+    font-size: calc(clamp(1.5rem, 3vw, 2.25rem) * var(--heading-scale));
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 3rem;
+  }
+
+  .values-grid__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--grid-gap);
+  }
+
+  .values-grid__card {
+    border-left: 4px solid var(--accent);
+    padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+    background: var(--surface);
+    border-radius: 0 var(--card-radius) var(--card-radius) 0;
+  }
+
+  .values-grid__card-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 0.625rem;
+  }
+
+  .values-grid__card-desc {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.7;
+    font-size: 0.9375rem;
+  }
+</style>

@@ -4,31 +4,67 @@ interface Props {
 }
 
 const { items } = Astro.props;
+
+// Layout DNA: threeCards (legacy default) — friendly icon-led cards, community-card treatment.
+const icons = ["☕", "✨", "🏡"];
 ---
 
-<section style="padding: 5rem 1.5rem; background: var(--bg);" aria-labelledby="pain-heading">
-  <div style="max-width: 72rem; margin: 0 auto;">
-    <h2
-      id="pain-heading"
-      style="text-align: center; font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; color: var(--text); margin: 0 0 3rem;"
-    >
-      Sound familiar?
-    </h2>
-    <div
-      style={`display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;`}
-    >
-      {items.map((item) => (
-        <article
-          style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; box-shadow: var(--shadow);"
-        >
-          <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--primary); margin: 0 0 0.75rem;">
-            {item.title}
-          </h3>
-          <p style="color: var(--text-muted); margin: 0; line-height: 1.7;">
-            {item.description}
-          </p>
+<section class="pain-grid" aria-labelledby="pain-heading">
+  <div class="pain-grid__inner">
+    <h2 id="pain-heading" class="pain-grid__heading">Sound familiar?</h2>
+    <div class="pain-grid__cards">
+      {items.map((item, i) => (
+        <article class="pain-grid__card community-card" data-reveal>
+          <span class="icon-badge" aria-hidden="true">{icons[i % icons.length]}</span>
+          <h3 class="pain-grid__card-title">{item.title}</h3>
+          <p class="pain-grid__card-desc">{item.description}</p>
         </article>
       ))}
     </div>
   </div>
 </section>
+
+<style>
+  .pain-grid {
+    padding: var(--section-padding-y) 1.5rem;
+    background: var(--bg);
+  }
+
+  .pain-grid__inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .pain-grid__heading {
+    text-align: center;
+    font-size: calc(clamp(1.5rem, 3vw, 2.25rem) * var(--heading-scale));
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 3rem;
+  }
+
+  .pain-grid__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--grid-gap);
+  }
+
+  .pain-grid__card {
+    padding: 2rem;
+    background: var(--surface);
+  }
+
+  .pain-grid__card-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 0 0 0.75rem;
+  }
+
+  .pain-grid__card-desc {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.7;
+  }
+</style>

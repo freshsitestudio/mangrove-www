@@ -9,37 +9,99 @@ interface Props {
 const { title, subtitle, ctaPrimary, ctaSecondary } = Astro.props;
 ---
 
-<section
-  style="background: var(--primary); padding: 5rem 1.5rem;"
-  aria-labelledby="cta-heading"
->
-  <div style="max-width: 56rem; margin: 0 auto; text-align: center;">
-    <h2
-      id="cta-heading"
-      style="font-size: clamp(1.5rem, 3.5vw, 2.5rem); font-weight: 700; color: #fff; margin: 0 0 1rem;"
-    >
-      {title}
-    </h2>
-    {subtitle && (
-      <p style="color: rgba(255,255,255,0.8); font-size: 1.125rem; margin: 0 0 2.5rem; max-width: 38rem; margin-left: auto; margin-right: auto;">
-        {subtitle}
-      </p>
-    )}
-    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-      <a
-        href={ctaPrimary.href}
-        style="background: #fff; color: var(--primary); padding: 0.875rem 2rem; border-radius: var(--radius); font-weight: 600; font-size: 1rem; display: inline-block;"
-      >
-        {ctaPrimary.text}
+<!-- Layout DNA: dualPath — two rounded, equally-weighted panels rather than one band with a
+     secondary link; each path gets its own bouncy hover, warm-local's friendliest CTA pattern. -->
+<section class="cta-band" aria-labelledby="cta-heading">
+  <div class="cta-band__inner">
+    <h2 id="cta-heading" class="cta-band__title">{title}</h2>
+    {subtitle && <p class="cta-band__subtitle">{subtitle}</p>}
+    <div class="cta-band__paths">
+      <a href={ctaPrimary.href} class="cta-band__path cta-band__path--primary">
+        <span class="cta-band__path-text">{ctaPrimary.text}</span>
+        <span class="cta-band__path-arrow" aria-hidden="true">→</span>
       </a>
       {ctaSecondary && (
-        <a
-          href={ctaSecondary.href}
-          style="background: transparent; color: #fff; padding: 0.875rem 2rem; border-radius: var(--radius); font-weight: 600; font-size: 1rem; border: 2px solid rgba(255,255,255,0.5); display: inline-block;"
-        >
-          {ctaSecondary.text}
+        <a href={ctaSecondary.href} class="cta-band__path cta-band__path--secondary">
+          <span class="cta-band__path-text">{ctaSecondary.text}</span>
+          <span class="cta-band__path-arrow" aria-hidden="true">→</span>
         </a>
       )}
     </div>
   </div>
 </section>
+
+<style>
+  .cta-band {
+    background: var(--surface-contrast);
+    padding: var(--section-padding-y) 1.5rem;
+  }
+
+  .cta-band__inner {
+    max-width: 46rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .cta-band__title {
+    font-size: calc(clamp(1.5rem, 3.25vw, 2.5rem) * var(--heading-scale));
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 1rem;
+  }
+
+  .cta-band__subtitle {
+    font-family: 'Lora', Georgia, serif;
+    color: rgba(255, 247, 237, 0.85);
+    font-size: 1.0625rem;
+    margin: 0 0 2.5rem;
+    max-width: 34rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-band__paths {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .cta-band__path {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    padding: 1.25rem 1.75rem;
+    border-radius: var(--card-radius);
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 1.0625rem;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  }
+
+  .cta-band__path--primary {
+    background: var(--accent);
+    color: #1C1A18;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .cta-band__path--secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+  }
+
+  .cta-band__path-arrow {
+    transition: transform 0.25s ease;
+  }
+
+  @media (hover: hover) {
+    .cta-band__path:hover {
+      transform: translateY(-4px) scale(1.03);
+      text-decoration: none;
+    }
+
+    .cta-band__path:hover .cta-band__path-arrow {
+      transform: translateX(4px);
+    }
+  }
+</style>

@@ -5,23 +5,49 @@ interface Props {
 }
 
 const { title, subtitle } = Astro.props;
+
+// Layout DNA: photoBanner — compact photo banner behind the title, warm scrim for contrast.
+const bannerImage =
+  "https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1400&q=80";
 ---
 
 <section
-  style="background: var(--bg-alt); border-bottom: 1px solid var(--border); padding: 4rem 1.5rem 3rem;"
+  class="page-hero-photo"
+  style={`background-image: linear-gradient(180deg, rgba(67, 20, 7, 0.35), rgba(67, 20, 7, 0.7)), url(${bannerImage});`}
   aria-labelledby="pagehero-heading"
 >
-  <div style="max-width: 56rem; margin: 0 auto; text-align: center;">
-    <h1
-      id="pagehero-heading"
-      style="font-size: clamp(1.75rem, 4vw, 3rem); font-weight: 700; color: var(--text); margin: 0 0 1rem;"
-    >
-      {title}
-    </h1>
-    {subtitle && (
-      <p style="font-size: 1.125rem; color: var(--text-muted); max-width: 40rem; margin: 0 auto;">
-        {subtitle}
-      </p>
-    )}
+  <div class="page-hero-photo__inner">
+    <h1 id="pagehero-heading" class="page-hero-photo__title">{title}</h1>
+    {subtitle && <p class="page-hero-photo__subtitle">{subtitle}</p>}
   </div>
 </section>
+
+<style>
+  .page-hero-photo {
+    background-size: cover;
+    background-position: center;
+    padding: 5rem 1.5rem 4rem;
+    text-align: center;
+  }
+
+  .page-hero-photo__inner {
+    max-width: 40rem;
+    margin: 0 auto;
+  }
+
+  .page-hero-photo__title {
+    font-size: calc(clamp(1.875rem, 4vw, 3rem) * var(--heading-scale));
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 0.875rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  }
+
+  .page-hero-photo__subtitle {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1.0625rem;
+    color: rgba(255, 247, 237, 0.92);
+    max-width: 36rem;
+    margin: 0 auto;
+  }
+</style>
