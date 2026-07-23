@@ -73,6 +73,27 @@ CDN only — no self-hosted fonts. Loaded in `Layout.astro`:
 
 **NO** — Palette is locked. `warm-local` sets `palette_locked: true` in handbook metadata. Do **not** ship a scheme picker, `[data-scheme]` CSS blocks, `DEFAULT_SCHEME` in `build.env`, or `localStorage` scheme persistence.
 
+## Widget Variant Matrix
+
+Implemented in Phase B (`E6-S9`). Glossary IDs verbatim from `DESIGN.md → §Widget variant glossary`; defaults match `DESIGN.md → §Default variant per theme` for `warm-local`. All widgets validate the incoming `variant` string against the allowed-ID list and fall back to the theme default below when the prop is omitted or invalid.
+
+| Widget | Allowed variants | Theme default |
+|---|---|---|
+| Hero | `centeredGradient`, `fullBleedPhoto`, `splitProof`, `editorialLeft` | `fullBleedPhoto` |
+| PageHero | `simple`, `photoBanner`, `breadcrumbBar` | `photoBanner` |
+| PainGrid | `threeCards`, `splitList`, `statBand` | `threeCards` |
+| AudienceGrid | `iconCards`, `photoCards`, `logoStrip` | `photoCards` |
+| ServiceCards | `pricingGrid`, `featureList`, `horizontalCards` | `horizontalCards` |
+| Testimonial | `singleQuote`, `logoQuote`, `carousel` | `singleQuote` |
+| CTABand | `gradientBand`, `minimalCentered`, `splitCta`, `dualPath` | `dualPath` |
+
+Notes:
+- `Hero: fullBleedPhoto`, `PageHero: photoBanner`, `PainGrid: threeCards`, `AudienceGrid: photoCards`, `ServiceCards: horizontalCards`, `Testimonial: singleQuote`, `CTABand: dualPath` are the theme's Phase A (E6-S8) visual, now formalized as the literal `variant` default — no visual change when the prop is omitted.
+- `Testimonial: logoQuote` and `carousel` render internal placeholder companion content (a company-initials logo mark / two extra static first-name quotes) alongside the single `quote`/`author` props the component receives — no new props were added, matching the theme's existing internal-placeholder-array pattern (see `AudienceGrid`/`ServiceCards` photo arrays). Both keep the theme's first-name-only informal attribution register.
+- `PageHero: breadcrumbBar` derives its trail from the current route (`Astro.url.pathname`) — no new prop.
+- `Hero: splitProof` renders an internal representative proof-stat panel (community/neighbourhood stats) — no new prop, mirrors the theme's placeholder-array pattern.
+- All non-default variants were smoke-tested at build time and pass the same WCAG AA / focus-visible floor as the shipped default (NFR-9).
+
 ## Component Props
 
 All 11 required widgets documented below. Themes may add optional props; this documents the actual shipped interface.
@@ -86,10 +107,11 @@ interface Props {
   subtitle?: string;
   ctaPrimary?: { text: string; href: string };
   ctaSecondary?: { text: string; href: string };
+  variant?: "centeredGradient" | "fullBleedPhoto" | "splitProof" | "editorialLeft";
 }
 ```
 
-`fullBleedPhoto` — full-bleed placeholder photo with a warm rust scrim gradient for text contrast, centered copy, warm subtitle below the headline, rounded pill CTAs (primary lime, secondary translucent-glass). `--gradient-start` / `--gradient-end` remain declared for token completeness but are not the hero's visual treatment (see Implementation Notes).
+Default `variant="fullBleedPhoto"` — full-bleed placeholder photo with a warm rust scrim gradient for text contrast, centered copy, warm subtitle below the headline, rounded pill CTAs (primary lime, secondary translucent-glass). `--gradient-start` / `--gradient-end` remain declared for token completeness and are now also used by the `centeredGradient` variant (see Implementation Notes). `splitProof` and `editorialLeft` variants render on `--bg`/`--surface` tokens and reuse the same AA-checked pill-button styles.
 
 ### PageHero.astro
 
@@ -97,16 +119,33 @@ interface Props {
 interface Props {
   title: string;
   subtitle?: string;
+  variant?: "simple" | "photoBanner" | "breadcrumbBar";
 }
 ```
 
-### PainGrid.astro / AudienceGrid.astro / ValuesGrid.astro
+Default `variant="photoBanner"`.
+
+### PainGrid.astro
 
 ```typescript
 interface Props {
   items: { title: string; description: string }[];
+  variant?: "threeCards" | "splitList" | "statBand";
 }
 ```
+
+Default `variant="threeCards"`.
+
+### AudienceGrid.astro / ValuesGrid.astro
+
+```typescript
+interface Props {
+  items: { title: string; description: string }[];
+  variant?: "iconCards" | "photoCards" | "logoStrip"; // AudienceGrid only — ValuesGrid has no variant prop
+}
+```
+
+`AudienceGrid` default `variant="photoCards"`. `ValuesGrid` is unchanged by E6-S9 (no `variant` prop).
 
 ### ServiceCards.astro
 
@@ -118,8 +157,11 @@ interface Props {
     price?: string;
     features: string[];
   }[];
+  variant?: "pricingGrid" | "featureList" | "horizontalCards";
 }
 ```
+
+Default `variant="horizontalCards"`.
 
 ### Testimonial.astro
 
@@ -129,8 +171,11 @@ interface Props {
   author: string;
   role?: string;
   company?: string;
+  variant?: "singleQuote" | "logoQuote" | "carousel";
 }
 ```
+
+Default `variant="singleQuote"`.
 
 ### CTABand.astro
 
@@ -140,8 +185,11 @@ interface Props {
   subtitle?: string;
   ctaPrimary: { text: string; href: string };
   ctaSecondary?: { text: string; href: string };
+  variant?: "gradientBand" | "minimalCentered" | "splitCta" | "dualPath";
 }
 ```
+
+Default `variant="dualPath"`.
 
 ### ProcessSteps.astro
 
@@ -229,3 +277,4 @@ Also required (§10 / §18 contract):
 - **About page "Meet the team":** `Content.astro` body HTML includes a `.content-team` block with 2–4
   circular portrait placeholders (`https://placehold.co/...`), names, and roles — AD-6 page order
   unchanged.
+- **Widget variants (Epic 6 Phase B / E6-S9):** Each of the seven core widgets validates its `variant` prop against the allowed-ID list (see Widget Variant Matrix above) and falls back to the theme default when omitted or invalid — `const variant = ALLOWED_VARIANTS.includes(variantProp) ? variantProp : THEME_DEFAULT`. `index.astro` and interior pages pass `variant=` explicitly matching the DESIGN.md default for documentation clarity; omitting the prop produces the identical shipped visual. No `composition.yaml` yet (`E6-S10`).

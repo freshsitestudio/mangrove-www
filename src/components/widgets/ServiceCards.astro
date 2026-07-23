@@ -1,4 +1,7 @@
 ---
+// Widget variant contract (Epic 6 / FR-20): handbook §8, DESIGN.md → §Widget variant glossary.
+type ServiceCardsVariant = "pricingGrid" | "featureList" | "horizontalCards";
+
 interface Props {
   services: {
     name: string;
@@ -6,11 +9,21 @@ interface Props {
     price?: string;
     features: string[];
   }[];
+  /** Glossary ID from DESIGN.md — e.g. "horizontalCards" */
+  variant?: ServiceCardsVariant;
 }
 
-const { services } = Astro.props;
+const ALLOWED_VARIANTS: ServiceCardsVariant[] = ["pricingGrid", "featureList", "horizontalCards"];
+const THEME_DEFAULT: ServiceCardsVariant = "horizontalCards"; // DESIGN.md §Default variant per theme — warm-local
 
-// Layout DNA: horizontalCards — wide rounded editorial rows, photography-forward, bouncy hover.
+const { services, variant: variantProp } = Astro.props;
+
+const variant: ServiceCardsVariant = ALLOWED_VARIANTS.includes(variantProp as ServiceCardsVariant)
+  ? (variantProp as ServiceCardsVariant)
+  : THEME_DEFAULT;
+
+// Layout DNA: horizontalCards (theme default) — wide rounded editorial rows,
+// photography-forward, bouncy hover.
 const cardImages = [
   "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=700&q=80",
   "https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=700&q=80",
@@ -18,38 +31,91 @@ const cardImages = [
 ];
 ---
 
-<section class="service-cards" aria-labelledby="services-heading">
-  <div class="service-cards__inner">
-    <h2 id="services-heading" class="service-cards__heading">Our services</h2>
-    <div class="service-cards__list">
-      {services.map((service, i) => (
-        <article class="horizontal-card service-cards__card" data-reveal>
-          <div
-            class="horizontal-card__photo"
-            style={`background-image: url(${cardImages[i % cardImages.length]});`}
-            role="presentation"
-          >
-          </div>
-          <div class="service-cards__body">
-            <h3 class="service-cards__name">{service.name}</h3>
-            <p class="service-cards__tagline">{service.tagline}</p>
-            {service.price && <p class="service-cards__price">{service.price}</p>}
-            <ul class="service-cards__features">
+{variant === "horizontalCards" && (
+  <section class="service-cards" aria-labelledby="services-heading">
+    <div class="service-cards__inner">
+      <h2 id="services-heading" class="service-cards__heading">Our services</h2>
+      <div class="service-cards__list">
+        {services.map((service, i) => (
+          <article class="horizontal-card service-cards__card" data-reveal>
+            <div
+              class="horizontal-card__photo"
+              style={`background-image: url(${cardImages[i % cardImages.length]});`}
+              role="presentation"
+            >
+            </div>
+            <div class="service-cards__body">
+              <h3 class="service-cards__name">{service.name}</h3>
+              <p class="service-cards__tagline">{service.tagline}</p>
+              {service.price && <p class="service-cards__price">{service.price}</p>}
+              <ul class="service-cards__features">
+                {service.features.map((f) => (
+                  <li class="service-cards__feature">
+                    <span class="service-cards__check" aria-hidden="true">✓</span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{variant === "pricingGrid" && (
+  <section class="service-pricing" aria-labelledby="services-heading">
+    <div class="service-pricing__inner">
+      <h2 id="services-heading" class="service-pricing__heading">Our services</h2>
+      <div class="service-pricing__grid">
+        {services.map((service) => (
+          <article class="service-pricing__card community-card" data-reveal>
+            <h3 class="service-pricing__name">{service.name}</h3>
+            <p class="service-pricing__tagline">{service.tagline}</p>
+            <p class="service-pricing__price">{service.price ?? "Ask us"}</p>
+            <ul class="service-pricing__features">
               {service.features.map((f) => (
-                <li class="service-cards__feature">
-                  <span class="service-cards__check" aria-hidden="true">✓</span>
+                <li class="service-pricing__feature">
+                  <span class="service-pricing__check" aria-hidden="true">✓</span>
                   {f}
                 </li>
               ))}
             </ul>
-          </div>
-        </article>
-      ))}
+          </article>
+        ))}
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+)}
+
+{variant === "featureList" && (
+  <section class="service-list" aria-labelledby="services-heading">
+    <div class="service-list__inner">
+      <h2 id="services-heading" class="service-list__heading">Our services</h2>
+      <div class="service-list__entries">
+        {services.map((service, i) => (
+          <article class="service-list__entry">
+            <span class="service-list__index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+            <div class="service-list__body">
+              <h3 class="service-list__name">{service.name}</h3>
+              <p class="service-list__tagline">{service.tagline}</p>
+              <ul class="service-list__tags">
+                {service.features.map((f) => (
+                  <li class="service-list__tag">{f}</li>
+                ))}
+              </ul>
+            </div>
+            {service.price && <p class="service-list__price">{service.price}</p>}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
 
 <style>
+  /* ---------- horizontalCards (theme default) ---------- */
   .service-cards {
     padding: var(--section-padding-y) 1.5rem;
     background: var(--bg);
@@ -120,8 +186,172 @@ const cardImages = [
   }
 
   .service-cards__check {
-    color: var(--accent);
+    color: var(--accent-warm);
     flex-shrink: 0;
     margin-top: 0.1em;
+  }
+
+  /* ---------- pricingGrid ---------- */
+  .service-pricing {
+    padding: var(--section-padding-y) 1.5rem;
+    background: var(--bg);
+  }
+
+  .service-pricing__inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .service-pricing__heading {
+    text-align: center;
+    font-size: calc(clamp(1.5rem, 3vw, 2.25rem) * var(--heading-scale));
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 3rem;
+  }
+
+  .service-pricing__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--grid-gap);
+  }
+
+  .service-pricing__card {
+    background: var(--surface);
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .service-pricing__name {
+    font-size: 1.1875rem;
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 0.5rem;
+  }
+
+  .service-pricing__tagline {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+    margin: 0 0 1.25rem;
+  }
+
+  .service-pricing__price {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 0 0 1.5rem;
+  }
+
+  .service-pricing__features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: left;
+  }
+
+  .service-pricing__feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+  }
+
+  .service-pricing__check {
+    color: var(--accent-warm);
+    flex-shrink: 0;
+    margin-top: 0.1em;
+  }
+
+  /* ---------- featureList ---------- */
+  .service-list {
+    padding: var(--section-padding-y) 1.5rem;
+    background: var(--bg);
+  }
+
+  .service-list__inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .service-list__heading {
+    font-size: calc(clamp(1.5rem, 3vw, 2.25rem) * var(--heading-scale));
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 2.5rem;
+  }
+
+  .service-list__entries {
+    border-top: 1px solid var(--border);
+  }
+
+  .service-list__entry {
+    display: grid;
+    grid-template-columns: 3rem 1fr auto;
+    gap: 1.5rem;
+    align-items: start;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .service-list__index {
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 1.125rem;
+    color: var(--accent-warm);
+  }
+
+  .service-list__name {
+    font-size: 1.1875rem;
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 0.5rem;
+  }
+
+  .service-list__tagline {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+    margin: 0 0 1rem;
+  }
+
+  .service-list__tags {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .service-list__tag {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.25rem 0.875rem;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  .service-list__price {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--primary);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 700px) {
+    .service-list__entry {
+      grid-template-columns: 2.5rem 1fr;
+    }
+    .service-list__price {
+      grid-column: 2;
+    }
   }
 </style>

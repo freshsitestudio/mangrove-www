@@ -11,6 +11,7 @@ import CTABand from "../components/widgets/CTABand.astro";
   <PageHero
     title="What we offer"
     subtitle="Clear offerings for locals who want to know what to expect before they walk in."
+    variant="photoBanner"
   />
 
   <ServiceCards
@@ -49,11 +50,13 @@ import CTABand from "../components/widgets/CTABand.astro";
         ],
       },
     ]}
+    variant="horizontalCards"
   />
 
   <CTABand
     title="Planning something for the neighbourhood?"
     subtitle="Describe your event or offering and we will help you get the word out."
     ctaPrimary={{ text: "Contact us", href: "/contact" }}
+    variant="dualPath"
   />
 </Layout>

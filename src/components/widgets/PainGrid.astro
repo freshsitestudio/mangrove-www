@@ -1,30 +1,86 @@
 ---
+// Widget variant contract (Epic 6 / FR-20): handbook §8, DESIGN.md → §Widget variant glossary.
+type PainGridVariant = "threeCards" | "splitList" | "statBand";
+
 interface Props {
   items: { title: string; description: string }[];
+  /** Glossary ID from DESIGN.md — e.g. "threeCards" */
+  variant?: PainGridVariant;
 }
 
-const { items } = Astro.props;
+const ALLOWED_VARIANTS: PainGridVariant[] = ["threeCards", "splitList", "statBand"];
+const THEME_DEFAULT: PainGridVariant = "threeCards"; // DESIGN.md §Default variant per theme — warm-local
 
-// Layout DNA: threeCards (legacy default) — friendly icon-led cards, community-card treatment.
+const { items, variant: variantProp } = Astro.props;
+
+const variant: PainGridVariant = ALLOWED_VARIANTS.includes(variantProp as PainGridVariant)
+  ? (variantProp as PainGridVariant)
+  : THEME_DEFAULT;
+
+// Layout DNA: threeCards (theme default) — friendly icon-led cards, community-card treatment.
 const icons = ["☕", "✨", "🏡"];
 ---
 
-<section class="pain-grid" aria-labelledby="pain-heading">
-  <div class="pain-grid__inner">
-    <h2 id="pain-heading" class="pain-grid__heading">Sound familiar?</h2>
-    <div class="pain-grid__cards">
-      {items.map((item, i) => (
-        <article class="pain-grid__card community-card" data-reveal>
-          <span class="icon-badge" aria-hidden="true">{icons[i % icons.length]}</span>
-          <h3 class="pain-grid__card-title">{item.title}</h3>
-          <p class="pain-grid__card-desc">{item.description}</p>
-        </article>
-      ))}
+{variant === "threeCards" && (
+  <section class="pain-grid" aria-labelledby="pain-heading">
+    <div class="pain-grid__inner">
+      <h2 id="pain-heading" class="pain-grid__heading">Sound familiar?</h2>
+      <div class="pain-grid__cards">
+        {items.map((item, i) => (
+          <article class="pain-grid__card community-card" data-reveal>
+            <span class="icon-badge" aria-hidden="true">{icons[i % icons.length]}</span>
+            <h3 class="pain-grid__card-title">{item.title}</h3>
+            <p class="pain-grid__card-desc">{item.description}</p>
+          </article>
+        ))}
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+)}
+
+{variant === "splitList" && (
+  /* Layout DNA: splitList — editorial two-column split, bordered list, no card chrome */
+  <section class="pain-split" aria-labelledby="pain-heading">
+    <div class="pain-split__inner">
+      <div class="pain-split__intro">
+        <h2 id="pain-heading" class="pain-split__heading">Sound familiar?</h2>
+        <p class="pain-split__lede">
+          Neighbours want to feel the warmth before they walk in — here is what gets in the way.
+        </p>
+      </div>
+      <ul class="pain-split__list">
+        {items.map((item, i) => (
+          <li class="pain-split__item">
+            <span class="pain-split__index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+            <div>
+              <h3 class="pain-split__item-title">{item.title}</h3>
+              <p class="pain-split__item-desc">{item.description}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+
+{variant === "statBand" && (
+  <section class="pain-stat" aria-labelledby="pain-heading">
+    <div class="pain-stat__inner">
+      <h2 id="pain-heading" class="pain-stat__heading">Sound familiar?</h2>
+      <div class="pain-stat__row">
+        {items.map((item) => (
+          <div class="pain-stat__item">
+            <p class="pain-stat__value">{item.title}</p>
+            <p class="pain-stat__label">{item.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
 
 <style>
+  /* ---------- threeCards (theme default) ---------- */
   .pain-grid {
     padding: var(--section-padding-y) 1.5rem;
     background: var(--bg);
@@ -66,5 +122,125 @@ const icons = ["☕", "✨", "🏡"];
     color: var(--text-muted);
     margin: 0;
     line-height: 1.7;
+  }
+
+  /* ---------- splitList ---------- */
+  .pain-split {
+    padding: var(--section-padding-y) 1.5rem;
+    background: var(--bg);
+  }
+
+  .pain-split__inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 3rem;
+  }
+
+  .pain-split__heading {
+    font-size: calc(clamp(1.5rem, 3vw, 2.25rem) * var(--heading-scale));
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 1rem;
+  }
+
+  .pain-split__lede {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin: 0;
+    max-width: 20rem;
+  }
+
+  .pain-split__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .pain-split__item {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pain-split__index {
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--accent-warm);
+    flex-shrink: 0;
+    padding-top: 0.1em;
+  }
+
+  .pain-split__item-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 0 0 0.5rem;
+  }
+
+  .pain-split__item-desc {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 800px) {
+    .pain-split__inner {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  /* ---------- statBand ---------- */
+  .pain-stat {
+    padding: var(--section-padding-y) 1.5rem;
+    background: var(--surface-alt);
+  }
+
+  .pain-stat__inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .pain-stat__heading {
+    text-align: center;
+    font-size: calc(clamp(1.5rem, 3vw, 2.25rem) * var(--heading-scale));
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 3rem;
+  }
+
+  .pain-stat__row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--grid-gap);
+    text-align: center;
+  }
+
+  .pain-stat__item {
+    padding: 1.5rem;
+    border-top: 3px solid var(--primary);
+  }
+
+  .pain-stat__value {
+    font-size: 1.375rem;
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 0.5rem;
+  }
+
+  .pain-stat__label {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+    margin: 0;
+    line-height: 1.6;
   }
 </style>

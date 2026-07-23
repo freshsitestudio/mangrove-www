@@ -1,28 +1,69 @@
 ---
+// Widget variant contract (Epic 6 / FR-20): handbook §8, DESIGN.md → §Widget variant glossary.
+type PageHeroVariant = "simple" | "photoBanner" | "breadcrumbBar";
+
 interface Props {
   title: string;
   subtitle?: string;
+  /** Glossary ID from DESIGN.md — e.g. "photoBanner" */
+  variant?: PageHeroVariant;
 }
 
-const { title, subtitle } = Astro.props;
+const ALLOWED_VARIANTS: PageHeroVariant[] = ["simple", "photoBanner", "breadcrumbBar"];
+const THEME_DEFAULT: PageHeroVariant = "photoBanner"; // DESIGN.md §Default variant per theme — warm-local
+
+const { title, subtitle, variant: variantProp } = Astro.props;
+
+const variant: PageHeroVariant = ALLOWED_VARIANTS.includes(variantProp as PageHeroVariant)
+  ? (variantProp as PageHeroVariant)
+  : THEME_DEFAULT;
 
 // Layout DNA: photoBanner — compact photo banner behind the title, warm scrim for contrast.
 const bannerImage =
   "https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1400&q=80";
+
+// breadcrumbBar — derived from the current route, not a new prop (title is always the trail leaf).
+const crumbPath = Astro.url.pathname.replace(/\/$/, "").split("/").filter(Boolean).pop();
 ---
 
-<section
-  class="page-hero-photo"
-  style={`background-image: linear-gradient(180deg, rgba(67, 20, 7, 0.35), rgba(67, 20, 7, 0.7)), url(${bannerImage});`}
-  aria-labelledby="pagehero-heading"
->
-  <div class="page-hero-photo__inner">
-    <h1 id="pagehero-heading" class="page-hero-photo__title">{title}</h1>
-    {subtitle && <p class="page-hero-photo__subtitle">{subtitle}</p>}
-  </div>
-</section>
+{variant === "photoBanner" && (
+  <section
+    class="page-hero-photo"
+    style={`background-image: linear-gradient(180deg, rgba(67, 20, 7, 0.35), rgba(67, 20, 7, 0.7)), url(${bannerImage});`}
+    aria-labelledby="pagehero-heading"
+  >
+    <div class="page-hero-photo__inner">
+      <h1 id="pagehero-heading" class="page-hero-photo__title">{title}</h1>
+      {subtitle && <p class="page-hero-photo__subtitle">{subtitle}</p>}
+    </div>
+  </section>
+)}
+
+{variant === "simple" && (
+  <section class="page-hero-simple" aria-labelledby="pagehero-heading">
+    <div class="page-hero-simple__inner">
+      <h1 id="pagehero-heading" class="page-hero-simple__title">{title}</h1>
+      {subtitle && <p class="page-hero-simple__subtitle">{subtitle}</p>}
+    </div>
+  </section>
+)}
+
+{variant === "breadcrumbBar" && (
+  <section class="page-hero-crumb" aria-labelledby="pagehero-heading">
+    <div class="page-hero-crumb__inner">
+      <nav class="page-hero-crumb__trail" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{crumbPath ? title : "Home"}</span>
+      </nav>
+      <h1 id="pagehero-heading" class="page-hero-crumb__title">{title}</h1>
+      {subtitle && <p class="page-hero-crumb__subtitle">{subtitle}</p>}
+    </div>
+  </section>
+)}
 
 <style>
+  /* ---------- photoBanner (theme default) ---------- */
   .page-hero-photo {
     background-size: cover;
     background-position: center;
@@ -49,5 +90,75 @@ const bannerImage =
     color: rgba(255, 247, 237, 0.92);
     max-width: 36rem;
     margin: 0 auto;
+  }
+
+  /* ---------- simple ---------- */
+  .page-hero-simple {
+    background: var(--bg);
+    padding: 4rem 1.5rem 3rem;
+    text-align: center;
+  }
+
+  .page-hero-simple__inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .page-hero-simple__title {
+    font-size: calc(clamp(1.875rem, 4vw, 2.75rem) * var(--heading-scale));
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 0.75rem;
+  }
+
+  .page-hero-simple__subtitle {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1.0625rem;
+    color: var(--text-muted);
+    max-width: 34rem;
+    margin: 0 auto;
+  }
+
+  /* ---------- breadcrumbBar ---------- */
+  .page-hero-crumb {
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 1.5rem 2.25rem;
+  }
+
+  .page-hero-crumb__inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .page-hero-crumb__trail {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin: 0 0 1rem;
+  }
+
+  .page-hero-crumb__trail a {
+    color: var(--text-muted);
+  }
+
+  .page-hero-crumb__title {
+    font-size: calc(clamp(1.625rem, 3.5vw, 2.5rem) * var(--heading-scale));
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 0.75rem;
+  }
+
+  .page-hero-crumb__subtitle {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1.0625rem;
+    color: var(--text-muted);
+    max-width: 40rem;
+    margin: 0;
   }
 </style>

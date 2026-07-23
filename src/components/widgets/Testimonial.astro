@@ -1,41 +1,114 @@
 ---
+// Widget variant contract (Epic 6 / FR-20): handbook §8, DESIGN.md → §Widget variant glossary.
+type TestimonialVariant = "singleQuote" | "logoQuote" | "carousel";
+
 interface Props {
   quote: string;
   author: string;
   role?: string;
   company?: string;
+  /** Glossary ID from DESIGN.md — e.g. "singleQuote" */
+  variant?: TestimonialVariant;
 }
 
-const { quote, author, role, company } = Astro.props;
+const ALLOWED_VARIANTS: TestimonialVariant[] = ["singleQuote", "logoQuote", "carousel"];
+const THEME_DEFAULT: TestimonialVariant = "singleQuote"; // DESIGN.md §Default variant per theme — warm-local
 
-// Layout DNA: singleQuote — first-name informal attribution. Drop company/formal title entirely;
-// show only a first name (+ a casual role word if present) for a warm, unpretentious feel.
-// Internal display logic only, no new prop.
+const { quote, author, role, company, variant: variantProp } = Astro.props;
+
+const variant: TestimonialVariant = ALLOWED_VARIANTS.includes(variantProp as TestimonialVariant)
+  ? (variantProp as TestimonialVariant)
+  : THEME_DEFAULT;
+
+// Layout DNA: singleQuote (theme default) — first-name informal attribution. Drop company/formal
+// title entirely; show only a first name (+ a casual role word if present) for a warm,
+// unpretentious feel. Internal display logic only, no new prop.
 const firstName = author.split(" ")[0];
 const casualRole = role && !company ? role : undefined;
+
+// logoQuote / carousel — internal placeholder companions to the single quote prop, mirroring the
+// theme's existing internal-placeholder-array pattern (cardImages, etc). No new props added.
+const companionLogo = company ?? "Cornerstone";
+const otherQuotes = [
+  { quote: "Everyone always feels welcome the moment they walk in.", author: "Theo" },
+  { quote: "It just feels like us — warm, easy, no fuss.", author: "Priya" },
+];
 ---
 
-<section class="testimonial" aria-labelledby="testimonial-heading">
-  <div class="testimonial__inner">
-    <h2 id="testimonial-heading" class="visually-hidden">Client testimonial</h2>
-    <figure class="testimonial__figure">
-      <blockquote class="testimonial__quote">
-        <span class="testimonial__mark" aria-hidden="true">&ldquo;</span>
-        {quote}
-        <span class="testimonial__mark" aria-hidden="true">&rdquo;</span>
-      </blockquote>
-      <figcaption class="testimonial__caption">
-        <span class="testimonial__avatar" aria-hidden="true">{firstName.charAt(0)}</span>
-        <span>
-          <strong class="testimonial__author">{firstName}</strong>
-          {casualRole && <span class="testimonial__meta">{casualRole}</span>}
-        </span>
-      </figcaption>
-    </figure>
-  </div>
-</section>
+{variant === "singleQuote" && (
+  <section class="testimonial" aria-labelledby="testimonial-heading">
+    <div class="testimonial__inner">
+      <h2 id="testimonial-heading" class="visually-hidden">Client testimonial</h2>
+      <figure class="testimonial__figure">
+        <blockquote class="testimonial__quote">
+          <span class="testimonial__mark" aria-hidden="true">&ldquo;</span>
+          {quote}
+          <span class="testimonial__mark" aria-hidden="true">&rdquo;</span>
+        </blockquote>
+        <figcaption class="testimonial__caption">
+          <span class="testimonial__avatar" aria-hidden="true">{firstName.charAt(0)}</span>
+          <span>
+            <strong class="testimonial__author">{firstName}</strong>
+            {casualRole && <span class="testimonial__meta">{casualRole}</span>}
+          </span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+)}
+
+{variant === "logoQuote" && (
+  <section class="testimonial-logo" aria-labelledby="testimonial-heading">
+    <div class="testimonial-logo__inner" data-reveal>
+      <h2 id="testimonial-heading" class="visually-hidden">Client testimonial</h2>
+      <span class="testimonial-logo__mark" aria-hidden="true">{companionLogo.slice(0, 2).toUpperCase()}</span>
+      <figure class="testimonial-logo__figure">
+        <blockquote class="testimonial-logo__quote">{quote}</blockquote>
+        <figcaption class="testimonial-logo__caption">
+          <strong class="testimonial-logo__author">{firstName}</strong>
+          {casualRole && <span class="testimonial-logo__meta">{casualRole}</span>}
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+)}
+
+{variant === "carousel" && (
+  <section class="testimonial-carousel" aria-labelledby="testimonial-heading">
+    <div class="testimonial-carousel__inner">
+      <h2 id="testimonial-heading" class="visually-hidden">Client testimonials</h2>
+      <div class="testimonial-carousel__track">
+        <figure class="testimonial-carousel__figure testimonial-carousel__figure--main community-card" data-reveal>
+          <blockquote class="testimonial-carousel__quote">{quote}</blockquote>
+          <figcaption class="testimonial-carousel__caption">
+            <strong>{firstName}</strong>
+            {casualRole && <span class="testimonial-carousel__meta">{casualRole}</span>}
+          </figcaption>
+        </figure>
+        {otherQuotes.map((item) => (
+          <figure class="testimonial-carousel__figure community-card">
+            <blockquote class="testimonial-carousel__quote">{item.quote}</blockquote>
+            <figcaption class="testimonial-carousel__caption">
+              <strong>{item.author}</strong>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
 
 <style>
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  /* ---------- singleQuote (theme default) ---------- */
   .testimonial {
     padding: var(--section-padding-y) 1.5rem;
     background: var(--surface-alt);
@@ -102,5 +175,115 @@ const casualRole = role && !company ? role : undefined;
     color: var(--text-muted);
     font-size: 0.9375rem;
     display: block;
+  }
+
+  /* ---------- logoQuote ---------- */
+  .testimonial-logo {
+    padding: var(--section-padding-y) 1.5rem;
+    background: var(--surface-alt);
+  }
+
+  .testimonial-logo__inner {
+    max-width: 42rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .testimonial-logo__mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--card-radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--primary);
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    margin: 0 auto 1.5rem;
+    box-shadow: var(--shadow);
+  }
+
+  .testimonial-logo__figure {
+    margin: 0;
+  }
+
+  .testimonial-logo__quote {
+    font-family: 'Lora', Georgia, serif;
+    font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.55;
+    margin: 0 0 1.25rem;
+  }
+
+  .testimonial-logo__author {
+    font-family: 'Nunito', system-ui, sans-serif;
+    color: var(--text);
+    font-weight: 800;
+    display: block;
+  }
+
+  .testimonial-logo__meta {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+    display: block;
+  }
+
+  /* ---------- carousel ---------- */
+  .testimonial-carousel {
+    padding: var(--section-padding-y) 1.5rem;
+    background: var(--surface-alt);
+  }
+
+  .testimonial-carousel__inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .testimonial-carousel__track {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--grid-gap);
+  }
+
+  .testimonial-carousel__figure {
+    margin: 0;
+    background: var(--surface);
+    padding: 1.75rem;
+  }
+
+  .testimonial-carousel__figure--main {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .testimonial-carousel__quote {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1rem;
+    color: var(--text);
+    line-height: 1.6;
+    margin: 0 0 1rem;
+  }
+
+  .testimonial-carousel__figure--main .testimonial-carousel__quote {
+    font-size: 1.1875rem;
+    font-weight: 500;
+  }
+
+  .testimonial-carousel__caption strong {
+    font-family: 'Nunito', system-ui, sans-serif;
+    color: var(--text);
+    font-weight: 800;
+  }
+
+  .testimonial-carousel__meta {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    display: block;
+    margin-top: 0.25rem;
   }
 </style>

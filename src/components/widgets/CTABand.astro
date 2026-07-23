@@ -1,36 +1,105 @@
 ---
+// Widget variant contract (Epic 6 / FR-20): handbook §8, DESIGN.md → §Widget variant glossary.
+type CTABandVariant = "gradientBand" | "minimalCentered" | "splitCta" | "dualPath";
+
 interface Props {
   title: string;
   subtitle?: string;
   ctaPrimary: { text: string; href: string };
   ctaSecondary?: { text: string; href: string };
+  /** Glossary ID from DESIGN.md — e.g. "dualPath" */
+  variant?: CTABandVariant;
 }
 
-const { title, subtitle, ctaPrimary, ctaSecondary } = Astro.props;
+const ALLOWED_VARIANTS: CTABandVariant[] = ["gradientBand", "minimalCentered", "splitCta", "dualPath"];
+const THEME_DEFAULT: CTABandVariant = "dualPath"; // DESIGN.md §Default variant per theme — warm-local
+
+const { title, subtitle, ctaPrimary, ctaSecondary, variant: variantProp } = Astro.props;
+
+const variant: CTABandVariant = ALLOWED_VARIANTS.includes(variantProp as CTABandVariant)
+  ? (variantProp as CTABandVariant)
+  : THEME_DEFAULT;
 ---
 
 <!-- Layout DNA: dualPath — two rounded, equally-weighted panels rather than one band with a
      secondary link; each path gets its own bouncy hover, warm-local's friendliest CTA pattern. -->
-<section class="cta-band" aria-labelledby="cta-heading">
-  <div class="cta-band__inner">
-    <h2 id="cta-heading" class="cta-band__title">{title}</h2>
-    {subtitle && <p class="cta-band__subtitle">{subtitle}</p>}
-    <div class="cta-band__paths">
-      <a href={ctaPrimary.href} class="cta-band__path cta-band__path--primary">
-        <span class="cta-band__path-text">{ctaPrimary.text}</span>
-        <span class="cta-band__path-arrow" aria-hidden="true">→</span>
-      </a>
-      {ctaSecondary && (
-        <a href={ctaSecondary.href} class="cta-band__path cta-band__path--secondary">
-          <span class="cta-band__path-text">{ctaSecondary.text}</span>
+{variant === "dualPath" && (
+  <section class="cta-band" aria-labelledby="cta-heading">
+    <div class="cta-band__inner">
+      <h2 id="cta-heading" class="cta-band__title">{title}</h2>
+      {subtitle && <p class="cta-band__subtitle">{subtitle}</p>}
+      <div class="cta-band__paths">
+        <a href={ctaPrimary.href} class="cta-band__path cta-band__path--primary">
+          <span class="cta-band__path-text">{ctaPrimary.text}</span>
           <span class="cta-band__path-arrow" aria-hidden="true">→</span>
         </a>
-      )}
+        {ctaSecondary && (
+          <a href={ctaSecondary.href} class="cta-band__path cta-band__path--secondary">
+            <span class="cta-band__path-text">{ctaSecondary.text}</span>
+            <span class="cta-band__path-arrow" aria-hidden="true">→</span>
+          </a>
+        )}
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+)}
+
+{variant === "gradientBand" && (
+  /* gradientBand: solid brick-primary band, single hierarchy of primary/secondary buttons */
+  <section class="cta-gradient" aria-labelledby="cta-heading">
+    <div class="cta-gradient__inner" data-reveal>
+      <h2 id="cta-heading" class="cta-gradient__title">{title}</h2>
+      {subtitle && <p class="cta-gradient__subtitle">{subtitle}</p>}
+      <div class="cta-gradient__actions">
+        <a href={ctaPrimary.href} class="cta-gradient__btn cta-gradient__btn--primary">{ctaPrimary.text}</a>
+        {ctaSecondary && (
+          <a href={ctaSecondary.href} class="cta-gradient__btn cta-gradient__btn--secondary">
+            {ctaSecondary.text}
+          </a>
+        )}
+      </div>
+    </div>
+  </section>
+)}
+
+{variant === "minimalCentered" && (
+  <section class="cta-minimal" aria-labelledby="cta-heading">
+    <div class="cta-minimal__inner" data-reveal>
+      <h2 id="cta-heading" class="cta-minimal__title">{title}</h2>
+      {subtitle && <p class="cta-minimal__subtitle">{subtitle}</p>}
+      <div class="cta-minimal__actions">
+        <a href={ctaPrimary.href} class="cta-minimal__btn cta-minimal__btn--primary">{ctaPrimary.text}</a>
+        {ctaSecondary && (
+          <a href={ctaSecondary.href} class="cta-minimal__btn cta-minimal__btn--secondary">
+            {ctaSecondary.text}
+          </a>
+        )}
+      </div>
+    </div>
+  </section>
+)}
+
+{variant === "splitCta" && (
+  <section class="cta-split" aria-labelledby="cta-heading">
+    <div class="cta-split__inner" data-reveal>
+      <div class="cta-split__copy">
+        <h2 id="cta-heading" class="cta-split__title">{title}</h2>
+        {subtitle && <p class="cta-split__subtitle">{subtitle}</p>}
+      </div>
+      <div class="cta-split__actions">
+        <a href={ctaPrimary.href} class="cta-split__btn cta-split__btn--primary">{ctaPrimary.text}</a>
+        {ctaSecondary && (
+          <a href={ctaSecondary.href} class="cta-split__btn cta-split__btn--secondary">
+            {ctaSecondary.text}
+          </a>
+        )}
+      </div>
+    </div>
+  </section>
+)}
 
 <style>
+  /* ---------- dualPath (theme default) ---------- */
   .cta-band {
     background: var(--surface-contrast);
     padding: var(--section-padding-y) 1.5rem;
@@ -102,6 +171,195 @@ const { title, subtitle, ctaPrimary, ctaSecondary } = Astro.props;
 
     .cta-band__path:hover .cta-band__path-arrow {
       transform: translateX(4px);
+    }
+  }
+
+  /* ---------- gradientBand ---------- */
+  .cta-gradient {
+    background: var(--primary);
+    padding: var(--section-padding-y) 1.5rem;
+  }
+
+  .cta-gradient__inner {
+    max-width: 46rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .cta-gradient__title {
+    font-size: calc(clamp(1.5rem, 3.25vw, 2.5rem) * var(--heading-scale));
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 1rem;
+  }
+
+  .cta-gradient__subtitle {
+    font-family: 'Lora', Georgia, serif;
+    color: rgba(255, 247, 237, 0.88);
+    font-size: 1.0625rem;
+    margin: 0 0 2.5rem;
+    max-width: 34rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-gradient__actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .cta-gradient__btn {
+    font-family: 'Nunito', system-ui, sans-serif;
+    padding: 0.9375rem 2.25rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 1rem;
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  }
+
+  .cta-gradient__btn--primary {
+    background: var(--accent);
+    color: #1C1A18;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .cta-gradient__btn--secondary {
+    background: transparent;
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+  }
+
+  @media (hover: hover) {
+    .cta-gradient__btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      text-decoration: none;
+    }
+  }
+
+  /* ---------- minimalCentered ---------- */
+  .cta-minimal {
+    background: var(--bg);
+    padding: var(--section-padding-y) 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .cta-minimal__inner {
+    max-width: 44rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .cta-minimal__title {
+    font-size: calc(clamp(1.375rem, 3vw, 2rem) * var(--heading-scale));
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 0.75rem;
+  }
+
+  .cta-minimal__subtitle {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    font-size: 1.0625rem;
+    margin: 0 0 2rem;
+  }
+
+  .cta-minimal__actions {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .cta-minimal__btn--primary {
+    font-family: 'Nunito', system-ui, sans-serif;
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 1.0625rem;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 0.125rem;
+  }
+
+  .cta-minimal__btn--secondary {
+    font-family: 'Nunito', system-ui, sans-serif;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+
+  /* ---------- splitCta ---------- */
+  .cta-split {
+    background: var(--surface-alt);
+    padding: var(--section-padding-y) 1.5rem;
+  }
+
+  .cta-split__inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .cta-split__copy {
+    flex: 1;
+    min-width: 240px;
+    text-align: left;
+  }
+
+  .cta-split__title {
+    font-size: calc(clamp(1.375rem, 3vw, 2rem) * var(--heading-scale));
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 0.5rem;
+  }
+
+  .cta-split__subtitle {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin: 0;
+    max-width: 34rem;
+  }
+
+  .cta-split__actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+
+  .cta-split__btn {
+    font-family: 'Nunito', system-ui, sans-serif;
+    padding: 0.8125rem 1.875rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    display: inline-block;
+    white-space: nowrap;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  }
+
+  .cta-split__btn--primary {
+    background: var(--accent);
+    color: #1C1A18;
+    box-shadow: var(--shadow);
+  }
+
+  .cta-split__btn--secondary {
+    background: transparent;
+    color: var(--text);
+    border: 2px solid var(--border);
+  }
+
+  @media (hover: hover) {
+    .cta-split__btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      text-decoration: none;
     }
   }
 </style>

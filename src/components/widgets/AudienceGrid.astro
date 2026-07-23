@@ -1,42 +1,92 @@
 ---
+// Widget variant contract (Epic 6 / FR-20): handbook §8, DESIGN.md → §Widget variant glossary.
+type AudienceGridVariant = "iconCards" | "photoCards" | "logoStrip";
+
 interface Props {
   items: { title: string; description: string }[];
+  /** Glossary ID from DESIGN.md — e.g. "photoCards" */
+  variant?: AudienceGridVariant;
 }
 
-const { items } = Astro.props;
+const ALLOWED_VARIANTS: AudienceGridVariant[] = ["iconCards", "photoCards", "logoStrip"];
+const THEME_DEFAULT: AudienceGridVariant = "photoCards"; // DESIGN.md §Default variant per theme — warm-local
 
-// Layout DNA: photoCards — photography-forward audience cards (warm-local default variant),
-// internal placeholder photo array, no new prop.
+const { items, variant: variantProp } = Astro.props;
+
+const variant: AudienceGridVariant = ALLOWED_VARIANTS.includes(variantProp as AudienceGridVariant)
+  ? (variantProp as AudienceGridVariant)
+  : THEME_DEFAULT;
+
+// Layout DNA: photoCards (theme default) — photography-forward audience cards, internal
+// placeholder photo array, no new prop.
 const cardImages = [
   "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80",
   "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80",
   "https://images.unsplash.com/photo-1543007631-283050bb2e28?auto=format&fit=crop&w=600&q=80",
 ];
+
+// iconCards — friendly emoji-style marks, mirroring PainGrid's icon-badge pattern. No new prop.
+const audienceIcons = ["☕", "🛍️", "🤝"];
 ---
 
-<section class="audience-grid" aria-labelledby="audience-heading">
-  <div class="audience-grid__inner">
-    <h2 id="audience-heading" class="audience-grid__heading">Built for places like yours</h2>
-    <div class="audience-grid__cards">
-      {items.map((item, i) => (
-        <article class="photo-card audience-grid__card" data-reveal>
-          <div
-            class="photo-card__image"
-            style={`background-image: url(${cardImages[i % cardImages.length]});`}
-            role="presentation"
-          >
-          </div>
-          <div class="photo-card__body">
-            <h3 class="audience-grid__card-title">{item.title}</h3>
-            <p class="audience-grid__card-desc">{item.description}</p>
-          </div>
-        </article>
-      ))}
+{variant === "photoCards" && (
+  <section class="audience-grid" aria-labelledby="audience-heading">
+    <div class="audience-grid__inner">
+      <h2 id="audience-heading" class="audience-grid__heading">Built for places like yours</h2>
+      <div class="audience-grid__cards">
+        {items.map((item, i) => (
+          <article class="photo-card audience-grid__card" data-reveal>
+            <div
+              class="photo-card__image"
+              style={`background-image: url(${cardImages[i % cardImages.length]});`}
+              role="presentation"
+            >
+            </div>
+            <div class="photo-card__body">
+              <h3 class="audience-grid__card-title">{item.title}</h3>
+              <p class="audience-grid__card-desc">{item.description}</p>
+            </div>
+          </article>
+        ))}
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+)}
+
+{variant === "iconCards" && (
+  <section class="audience-icon" aria-labelledby="audience-heading">
+    <div class="audience-icon__inner">
+      <h2 id="audience-heading" class="audience-icon__heading">Built for places like yours</h2>
+      <div class="audience-icon__cards">
+        {items.map((item, i) => (
+          <article class="audience-icon__card community-card" data-reveal>
+            <span class="icon-badge" aria-hidden="true">{audienceIcons[i % audienceIcons.length]}</span>
+            <h3 class="audience-icon__card-title">{item.title}</h3>
+            <p class="audience-icon__card-desc">{item.description}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{variant === "logoStrip" && (
+  <section class="audience-logos" aria-labelledby="audience-heading">
+    <div class="audience-logos__inner">
+      <h2 id="audience-heading" class="audience-logos__heading">Built for places like yours</h2>
+      <ul class="audience-logos__row">
+        {items.map((item) => (
+          <li class="audience-logos__chip" title={item.description}>
+            <span class="audience-logos__chip-title">{item.title}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
 
 <style>
+  /* ---------- photoCards (theme default) ---------- */
   .audience-grid {
     padding: var(--section-padding-y) 1.5rem;
     background: var(--surface-alt);
@@ -74,5 +124,98 @@ const cardImages = [
     margin: 0;
     line-height: 1.7;
     font-size: 0.9375rem;
+  }
+
+  /* ---------- iconCards ---------- */
+  .audience-icon {
+    padding: var(--section-padding-y) 1.5rem;
+    background: var(--surface-alt);
+  }
+
+  .audience-icon__inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .audience-icon__heading {
+    text-align: center;
+    font-size: calc(clamp(1.5rem, 3vw, 2.25rem) * var(--heading-scale));
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 3rem;
+  }
+
+  .audience-icon__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--grid-gap);
+  }
+
+  .audience-icon__card {
+    background: var(--surface);
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .audience-icon__card-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 0.75rem;
+  }
+
+  .audience-icon__card-desc {
+    font-family: 'Lora', Georgia, serif;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  /* ---------- logoStrip ---------- */
+  .audience-logos {
+    padding: var(--section-padding-y) 1.5rem;
+    background: var(--surface-alt);
+  }
+
+  .audience-logos__inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .audience-logos__heading {
+    font-size: calc(clamp(1.5rem, 3vw, 2.25rem) * var(--heading-scale));
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 2.5rem;
+  }
+
+  .audience-logos__row {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.25rem;
+  }
+
+  .audience-logos__chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.75rem 1.75rem;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 700;
+    color: var(--text);
+    box-shadow: var(--shadow);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  }
+
+  @media (hover: hover) {
+    .audience-logos__chip:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: var(--shadow-lg);
+    }
   }
 </style>
