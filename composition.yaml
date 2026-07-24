@@ -1,0 +1,16 @@
+# AD-13 Home composition recipes — warm-local
+home_recipes:
+  default:
+    - hero: fullBleedPhoto
+    - painGrid: threeCards
+    - audienceGrid: photoCards
+    - serviceCards: horizontalCards
+    - testimonial: singleQuote
+    - ctaBand: dualPath
+  eventsLed:
+    - hero: fullBleedPhoto
+    - audienceGrid: photoCards
+    - serviceCards: horizontalCards
+    - painGrid: threeCards
+    - testimonial: singleQuote
+    - ctaBand: dualPath

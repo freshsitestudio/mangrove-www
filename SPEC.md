@@ -94,6 +94,15 @@ Notes:
 - `Hero: splitProof` renders an internal representative proof-stat panel (community/neighbourhood stats) — no new prop, mirrors the theme's placeholder-array pattern.
 - All non-default variants were smoke-tested at build time and pass the same WCAG AA / focus-visible floor as the shipped default (NFR-9).
 
+## Composition Profile
+
+- `composition.yaml` present: YES (repo root, alongside this SPEC.md)
+- Schema: `$HANDBOOK_ROOT/references/composition-yaml.schema.yaml`
+- Recipes: `default`, `eventsLed`
+- `default` order: Hero → PainGrid → AudienceGrid → ServiceCards → Testimonial → CTABand
+- `default` variants match DESIGN.md row for `warm-local`: YES
+- Amelia applies via Design Brief v2 §2 + hand-edit of `index.astro` (no YAML Astro loader)
+
 ## Component Props
 
 All 11 required widgets documented below. Themes may add optional props; this documents the actual shipped interface.
@@ -277,4 +286,4 @@ Also required (§10 / §18 contract):
 - **About page "Meet the team":** `Content.astro` body HTML includes a `.content-team` block with 2–4
   circular portrait placeholders (`https://placehold.co/...`), names, and roles — AD-6 page order
   unchanged.
-- **Widget variants (Epic 6 Phase B / E6-S9):** Each of the seven core widgets validates its `variant` prop against the allowed-ID list (see Widget Variant Matrix above) and falls back to the theme default when omitted or invalid — `const variant = ALLOWED_VARIANTS.includes(variantProp) ? variantProp : THEME_DEFAULT`. `index.astro` and interior pages pass `variant=` explicitly matching the DESIGN.md default for documentation clarity; omitting the prop produces the identical shipped visual. No `composition.yaml` yet (`E6-S10`).
+- **Widget variants (Epic 6 Phase B / E6-S9):** Each of the seven core widgets validates its `variant` prop against the allowed-ID list (see Widget Variant Matrix above) and falls back to the theme default when omitted or invalid — `const variant = ALLOWED_VARIANTS.includes(variantProp) ? variantProp : THEME_DEFAULT`. `index.astro` and interior pages pass `variant=` explicitly matching the DESIGN.md default for documentation clarity; omitting the prop produces the identical shipped visual. Home composition recipes live in repo-root `composition.yaml` (Phase C / E6-S10).
